@@ -124,13 +124,13 @@ public class ScriptRunner {
 				} else if (delimMatch.matches()) {
 					setDelimiter(delimMatch.group(2), false);
 				} else if (trimmedLine.startsWith("--")) {
-					println(trimmedLine);
+					logWriter.println(trimmedLine);
 				} else if (trimmedLine.length() < 1 || trimmedLine.startsWith("--")) {
 					// Do nothing
-				} else if (!fullLineDelimiter && trimmedLine.endsWith(getDelimiter())
-						|| fullLineDelimiter && trimmedLine.equals(getDelimiter())) {
+				} else if (!fullLineDelimiter && trimmedLine.endsWith(delimiter)
+						|| fullLineDelimiter && trimmedLine.equals(delimiter)) {
 					command.append(line.substring(0, line
-							.lastIndexOf(getDelimiter())));
+							.lastIndexOf(delimiter)));
 					command.append(" ");
 					this.execCommand(conn, command, lineReader);
 					command = null;
@@ -149,7 +149,8 @@ public class ScriptRunner {
 			throw new IOException(String.format("Error executing '%s': %s", command, e.getMessage()), e);
 		} finally {
 			conn.rollback();
-			flush();
+			logWriter.flush();
+			errorLogWriter.flush();
 		}
 	}
 
@@ -157,14 +158,14 @@ public class ScriptRunner {
 							 LineNumberReader lineReader) throws SQLException {
 		Statement statement = conn.createStatement();
 
-		println(command.toString());
+		logWriter.println(command.toString());
 
 		try {
 			statement.execute(command.toString());
 		} catch (SQLException e) {
 			final String errText = String.format("Error executing '%s' (line %d): %s",
 					command, lineReader.getLineNumber(), e.getMessage());
-			printlnError(errText);
+			errorLogWriter.println(errText);
 			if (stopOnError) {
 				throw new SQLException(errText, e);
 			}
@@ -175,7 +176,6 @@ public class ScriptRunner {
 			conn.commit();
 		}
 
-
 		resultSetPrinter.print(statement.getResultSet());
 
 		try {
@@ -185,36 +185,4 @@ public class ScriptRunner {
 		}
 	}
 
-	private String getDelimiter() {
-		return delimiter;
-	}
-
-	@SuppressWarnings("UseOfSystemOutOrSystemErr")
-
-	private void print(String o) {
-		if (logWriter != null) {
-			logWriter.print(o);
-		}
-	}
-
-	private void println(String o) {
-		if (logWriter != null) {
-			logWriter.println(o);
-		}
-	}
-
-	private void printlnError(String o) {
-		if (errorLogWriter != null) {
-			errorLogWriter.println(o);
-		}
-	}
-
-	private void flush() {
-		if (logWriter != null) {
-			logWriter.flush();
-		}
-		if (errorLogWriter != null) {
-			errorLogWriter.flush();
-		}
-	}
 }

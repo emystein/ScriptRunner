@@ -8,7 +8,6 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.Arrays;
 import java.util.Collection;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -46,7 +45,7 @@ public class ScriptRunnerTest {
 		connection = DriverManager.getConnection("jdbc:h2:mem:test");
 		connection.setAutoCommit(connectionAutoCommit);
 	}
-	
+
 	@Test
 	public void runScript() throws Exception {
 		ScriptRunner scriptRunner = new ScriptRunner(connection, runnerAutoCommit, runnerStopOnError);

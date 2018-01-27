@@ -85,6 +85,10 @@ public class ScriptRunner {
         this.errorLogWriter = errorLogWriter;
     }
 
+	public void runScript(String scriptPath) throws IOException, SQLException {
+		runScript(new BufferedReader(new FileReader(scriptPath)));
+	}
+
     /**
      * Runs an SQL script (read in using the Reader parameter)
      *

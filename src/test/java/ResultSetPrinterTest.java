@@ -6,6 +6,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -18,21 +19,19 @@ public class ResultSetPrinterTest {
 	@Mock
 	private PrintWriter logWriter;
 
-	private Connection connection;
-	private ScriptRunner scriptRunner;
+	private static Connection connection;
 
-	@Before
-	public void setUp() throws Exception {
+	@BeforeClass
+	public static void beforeClass() throws Exception {
 		connection = DriverManager.getConnection("jdbc:h2:mem:test");
-		scriptRunner = new ScriptRunner(connection, true, true);
+		ScriptRunner scriptRunner = new ScriptRunner(connection, true, true);
 		scriptRunner.runScript("src/test/resources/schema.sql");
 		scriptRunner.runScript("src/test/resources/insert-posts.sql");
-		resultSetPrinter = new ResultSetPrinter(logWriter);
 	}
 
-	@After
-	public void tearDown() throws Exception {
-		scriptRunner.runScript("src/test/resources/drop-schema.sql");
+	@Before
+	public void setUp() {
+		resultSetPrinter = new ResultSetPrinter(logWriter);
 	}
 
 	@Test

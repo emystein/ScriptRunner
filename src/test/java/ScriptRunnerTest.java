@@ -46,14 +46,7 @@ public class ScriptRunnerTest {
 		connection = DriverManager.getConnection("jdbc:h2:mem:test");
 		connection.setAutoCommit(connectionAutoCommit);
 	}
-
-	@After
-	public void tearDown() throws Exception {
-		Statement statement = connection.createStatement();
-		statement.execute("DROP TABLE post IF EXISTS;");
-		statement.execute("DROP TABLE author IF EXISTS;");
-	}
-
+	
 	@Test
 	public void runScript() throws Exception {
 		ScriptRunner scriptRunner = new ScriptRunner(connection, runnerAutoCommit, runnerStopOnError);

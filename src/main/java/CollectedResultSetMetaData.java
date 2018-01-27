@@ -6,7 +6,7 @@ import java.util.Collection;
 public class CollectedResultSetMetaData {
 	private ResultSetMetaData wrappedMetadata;
 
-	public CollectedResultSetMetaData(ResultSetMetaData resultSetMetaData) throws SQLException {
+	public CollectedResultSetMetaData(ResultSetMetaData resultSetMetaData) {
 		wrappedMetadata = resultSetMetaData;
 	}
 

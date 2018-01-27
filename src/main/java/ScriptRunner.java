@@ -156,9 +156,8 @@ public class ScriptRunner {
 
 		println(command.toString());
 
-		boolean hasResults = false;
 		try {
-			hasResults = statement.execute(command.toString());
+			statement.execute(command.toString());
 		} catch (SQLException e) {
 			final String errText = String.format("Error executing '%s' (line %d): %s",
 					command, lineReader.getLineNumber(), e.getMessage());
@@ -173,11 +172,9 @@ public class ScriptRunner {
 			conn.commit();
 		}
 
-		ResultSet rs = statement.getResultSet();
-		if (hasResults && rs != null) {
-			ResultSetPrinter resultSetPrinter = new ResultSetPrinter(rs, logWriter);
-			resultSetPrinter.print();
-		}
+
+		ResultSetPrinter resultSetPrinter = new ResultSetPrinter(statement.getResultSet(), logWriter);
+		resultSetPrinter.print();
 
 		try {
 			statement.close();

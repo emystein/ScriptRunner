@@ -1,5 +1,3 @@
-import static org.mockito.Mockito.times;
-
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;

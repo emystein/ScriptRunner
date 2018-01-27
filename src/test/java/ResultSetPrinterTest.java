@@ -14,12 +14,12 @@ import org.mockito.junit.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ResultSetPrinterTest {
-	private Connection connection;
+	private ResultSetPrinter resultSetPrinter;
 	@Mock
 	private PrintWriter logWriter;
 
+	private Connection connection;
 	private ScriptRunner scriptRunner;
-
 
 	@Before
 	public void setUp() throws Exception {
@@ -27,6 +27,7 @@ public class ResultSetPrinterTest {
 		scriptRunner = new ScriptRunner(connection, true, true);
 		scriptRunner.runScript("src/test/resources/schema.sql");
 		scriptRunner.runScript("src/test/resources/insert-posts.sql");
+		resultSetPrinter = new ResultSetPrinter(logWriter);
 	}
 
 	@After
@@ -38,10 +39,8 @@ public class ResultSetPrinterTest {
 	public void printResultSet() throws SQLException {
 		Statement statement = connection.createStatement();
 		statement.execute("SELECT post.title, author.name as author FROM post, author WHERE post.author_id = author.id ORDER BY post.title");
-		ResultSet resultSet = statement.getResultSet();
 
-		ResultSetPrinter printer = new ResultSetPrinter(resultSet, logWriter);
-		printer.print();
+		resultSetPrinter.print(statement.getResultSet());
 
 		Mockito.verify(logWriter).println("TITLE\tAUTHOR");
 		Mockito.verify(logWriter).println("author 1 post 1\temystein");
@@ -52,15 +51,12 @@ public class ResultSetPrinterTest {
 	public void printEmptyResultSet() throws SQLException {
 		Statement statement = connection.createStatement();
 		statement.execute("SELECT * FROM post WHERE author_id = -1");
-		ResultSet resultSet = statement.getResultSet();
 
-		ResultSetPrinter printer = new ResultSetPrinter(resultSet, logWriter);
-		printer.print();
+		resultSetPrinter.print(statement.getResultSet());
 	}
 
 	@Test
 	public void printNullResultSet() throws SQLException {
-		ResultSetPrinter printer = new ResultSetPrinter(null, logWriter);
-		printer.print();
+		resultSetPrinter.print(null);
 	}
 }

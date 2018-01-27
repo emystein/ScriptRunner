@@ -3,21 +3,18 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class ResultSetPrinter {
-	private final ResultSet resultSet;
 	private final PrintWriter printWriter;
-	private CollectedResultSetMetaData resultSetMetaData;
 
-	public ResultSetPrinter(ResultSet resultSet, PrintWriter printWriter) throws SQLException {
-		this.resultSet = resultSet;
+	public ResultSetPrinter(PrintWriter printWriter) {
 		this.printWriter = printWriter;
-		if (resultSet != null)
-			resultSetMetaData = new CollectedResultSetMetaData(resultSet.getMetaData());
 	}
 
-	public void print() throws SQLException {
+	public void print(ResultSet resultSet) throws SQLException {
 		if (resultSet == null) {
 			return;
 		}
+
+		CollectedResultSetMetaData resultSetMetaData = new CollectedResultSetMetaData(resultSet.getMetaData());
 
 		printWriter.println(String.join("\t", resultSetMetaData.getColumnLabels()));
 

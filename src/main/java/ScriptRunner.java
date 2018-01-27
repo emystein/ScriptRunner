@@ -38,6 +38,7 @@ public class ScriptRunner {
 
 	private String delimiter = DEFAULT_DELIMITER;
 	private boolean fullLineDelimiter = false;
+	private ResultSetPrinter resultSetPrinter;
 
 	/**
 	 * Default constructor
@@ -49,6 +50,7 @@ public class ScriptRunner {
 		this.stopOnError = stopOnError;
 		logWriter = createLogWriter("create_db.log");
 		errorLogWriter = createLogWriter("create_db_error.log");
+		resultSetPrinter = new ResultSetPrinter(logWriter);
 		String timeStamp = new SimpleDateFormat("dd/mm/yyyy HH:mm:ss").format(new java.util.Date());
 		logWriter.println("\n-------\n" + timeStamp + "\n-------\n");
 		errorLogWriter.println("\n-------\n" + timeStamp + "\n-------\n");
@@ -60,6 +62,7 @@ public class ScriptRunner {
 		this.stopOnError = stopOnError;
 		this.logWriter = logWriter;
 		this.errorLogWriter = errorLogWriter;
+		resultSetPrinter = new ResultSetPrinter(logWriter);
 //		String timeStamp = new SimpleDateFormat("dd/mm/yyyy HH:mm:ss").format(new java.util.Date());
 //		logWriter.println("\n-------\n" + timeStamp + "\n-------\n");
 //		errorLogWriter.println("\n-------\n" + timeStamp + "\n-------\n");
@@ -173,8 +176,7 @@ public class ScriptRunner {
 		}
 
 
-		ResultSetPrinter resultSetPrinter = new ResultSetPrinter(statement.getResultSet(), logWriter);
-		resultSetPrinter.print();
+		resultSetPrinter.print(statement.getResultSet());
 
 		try {
 			statement.close();

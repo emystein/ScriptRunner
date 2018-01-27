@@ -4,22 +4,58 @@ import java.io.File;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Arrays;
+import java.util.Collection;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
+import org.junit.runners.Parameterized.Parameter;
+import org.junit.runners.Parameterized.Parameters;
 
+@RunWith(Parameterized.class)
 public class ScriptRunnerTest {
 	private Connection connection;
+
+	@Parameters
+	public static Collection<Object[]> data() {
+		return Arrays.asList(new Object[][] {
+				{ false, false, false},
+				{ false, false, true },
+				{ false, true, false},
+				{ false, true, true },
+				{ true, false, false},
+				{ true, false, true },
+				{ true, true, false },
+				{ true, true, true }
+		});
+	}
+
+	@Parameter
+	public boolean connectionAutoCommit;
+	@Parameter(1)
+	public boolean runnerAutoCommit;
+	@Parameter(2)
+	public boolean runnerStopOnError;
 
 	@Before
 	public void setUp() throws Exception {
 		connection = DriverManager.getConnection("jdbc:h2:mem:test");
+		connection.setAutoCommit(connectionAutoCommit);
+	}
+
+	@After
+	public void tearDown() throws Exception {
+		Statement statement = connection.createStatement();
+		statement.execute("DROP TABLE post IF EXISTS;");
+		statement.execute("DROP TABLE author IF EXISTS;");
 	}
 
 	@Test
 	public void runScript() throws Exception {
-		ScriptRunner scriptRunner = new ScriptRunner(connection, true, true);
+		ScriptRunner scriptRunner = new ScriptRunner(connection, runnerAutoCommit, runnerStopOnError);
 		scriptRunner.runScript("src/test/resources/schema.sql");
 
 		Statement statement = connection.createStatement();
@@ -35,7 +71,7 @@ public class ScriptRunnerTest {
 	}
 
 	@Test
-	public void createLogFiles() {
+	public void aNewScriptRunnerShouldCreateLogFiles() {
 		File logFile = new File("create_db.log");
 		assertThat(logFile.delete());
 

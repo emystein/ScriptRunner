@@ -37,32 +37,31 @@ public class ScriptRunner {
         this.connection = connection;
         this.autoCommit = autoCommit;
         this.stopOnError = stopOnError;
-        File logFile = new File("create_db.log");
-        File errorLogFile = new File("create_db_error.log");
-        try {
-            if (logFile.exists()) {
-                logWriter = new PrintWriter(new FileWriter(logFile, true));
-            } else {
-                logWriter = new PrintWriter(new FileWriter(logFile, false));
-            }
-        } catch(IOException e){
-            System.err.println("Unable to access or create the db_create log");
-        }
-        try {
-            if (errorLogFile.exists()) {
-                errorLogWriter = new PrintWriter(new FileWriter(errorLogFile, true));
-            } else {
-                errorLogWriter = new PrintWriter(new FileWriter(errorLogFile, false));
-            }
-        } catch(IOException e){
-            System.err.println("Unable to access or create the db_create error log");
-        }
+		logWriter = createLogWriter("create_db.log");
+		errorLogWriter = createLogWriter("create_db_error.log");
         String timeStamp = new SimpleDateFormat("dd/mm/yyyy HH:mm:ss").format(new java.util.Date());
         println("\n-------\n" + timeStamp + "\n-------\n");
         printlnError("\n-------\n" + timeStamp + "\n-------\n");
     }
 
-    public void setDelimiter(String delimiter, boolean fullLineDelimiter) {
+	private PrintWriter createLogWriter(String logPath) {
+		PrintWriter logWriter = null;
+
+		try {
+			File logFile = new File(logPath);
+			if (logFile.exists()) {
+				logWriter = new PrintWriter(new FileWriter(logFile, true));
+			} else {
+				logWriter = new PrintWriter(new FileWriter(logFile, false));
+			}
+		} catch(IOException e) {
+			System.err.println(String.format("Unable to access or create the %s log", logPath));
+		}
+
+		return logWriter;
+	}
+
+	public void setDelimiter(String delimiter, boolean fullLineDelimiter) {
         this.delimiter = delimiter;
         this.fullLineDelimiter = fullLineDelimiter;
     }

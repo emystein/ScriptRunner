@@ -1,11 +1,7 @@
 # ScriptRunner
 Allows to virtually use `source script.sql` with your JDBC 
 
-Initial code was duplicated from: http://pastebin.com/f10584951
-
-Initial code was found using: http://stackoverflow.com/a/1044837/334493
-
-The initial code didn't allow custom delimiters (at least not dynamically) so it was not suited for procedure declarations.
+Refactored code from https://github.com/BenoitDuffez/ScriptRunner
 
 # Example
 

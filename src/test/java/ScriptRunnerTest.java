@@ -1,5 +1,6 @@
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.io.File;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -31,5 +32,20 @@ public class ScriptRunnerTest {
 		resultSet.next();
 		assertThat(resultSet.getString("post.title")).isEqualTo("post 1");
 		assertThat(resultSet.getString("author.name")).isEqualTo("emystein");
+	}
+
+	@Test
+	public void createLogFiles() {
+		File logFile = new File("create_db.log");
+		assertThat(logFile.delete());
+
+		File errorLogFile = new File("create_db_error.log");
+		assertThat(errorLogFile.delete());
+
+		// exercise
+		ScriptRunner scriptRunner = new ScriptRunner(connection, true, true);
+
+		assertThat(logFile.exists());
+		assertThat(errorLogFile.exists());
 	}
 }

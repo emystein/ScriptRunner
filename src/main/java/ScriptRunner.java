@@ -40,11 +40,7 @@ public class ScriptRunner {
 	private boolean fullLineDelimiter = false;
 	private ResultSetPrinter resultSetPrinter;
 
-	/**
-	 * Default constructor
-	 */
-	public ScriptRunner(Connection connection, boolean autoCommit,
-						boolean stopOnError) throws IOException {
+	public ScriptRunner(Connection connection, boolean autoCommit, boolean stopOnError) throws IOException {
 		this.connection = connection;
 		this.autoCommit = autoCommit;
 		this.stopOnError = stopOnError;
@@ -63,9 +59,6 @@ public class ScriptRunner {
 		this.logWriter = logWriter;
 		this.errorLogWriter = errorLogWriter;
 		resultSetPrinter = new ResultSetPrinter(logWriter);
-//		String timeStamp = new SimpleDateFormat("dd/mm/yyyy HH:mm:ss").format(new java.util.Date());
-//		logWriter.println("\n-------\n" + timeStamp + "\n-------\n");
-//		errorLogWriter.println("\n-------\n" + timeStamp + "\n-------\n");
 	}
 
 	private PrintWriter createLogWriter(String logPath) throws IOException {
@@ -107,8 +100,7 @@ public class ScriptRunner {
 	 * @throws SQLException if any SQL errors occur
 	 * @throws IOException  if there is an error reading from the Reader
 	 */
-	private void runScript(Connection conn, Reader reader) throws IOException,
-			SQLException {
+	private void runScript(Connection conn, Reader reader) throws IOException, SQLException {
 		StringBuffer command = null;
 		try {
 			LineNumberReader lineReader = new LineNumberReader(reader);
@@ -154,8 +146,7 @@ public class ScriptRunner {
 		}
 	}
 
-	private void execCommand(Connection conn, StringBuffer command,
-							 LineNumberReader lineReader) throws SQLException {
+	private void execCommand(Connection conn, StringBuffer command, LineNumberReader lineReader) throws SQLException {
 		Statement statement = conn.createStatement();
 
 		logWriter.println(command.toString());

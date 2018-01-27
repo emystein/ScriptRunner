@@ -171,18 +171,13 @@ public class ScriptRunner {
 			}
 		}
 
-		// TODO: this can be deleted, assuming the execCommand command method is always called from runScript which sets autoCommit accordingly
-		if (autoCommit && !conn.getAutoCommit()) {
+		if (!conn.getAutoCommit()) {
 			conn.commit();
 		}
 
 		resultSetPrinter.print(statement.getResultSet());
 
-		try {
-			statement.close();
-		} catch (Exception e) {
-			// Ignore to workaround a bug in Jakarta DBCP
-		}
+		statement.close();
 	}
 
 }

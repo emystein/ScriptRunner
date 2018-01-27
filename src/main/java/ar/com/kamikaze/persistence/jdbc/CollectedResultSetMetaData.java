@@ -4,6 +4,7 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 public class CollectedResultSetMetaData {
 	private ResultSetMetaData wrappedMetadata;
@@ -12,15 +13,11 @@ public class CollectedResultSetMetaData {
 		wrappedMetadata = resultSetMetaData;
 	}
 
-	public int getColumnCount() throws SQLException {
-		return wrappedMetadata.getColumnCount();
-	}
+	public List<String> getColumnLabels()throws SQLException {
+		List<String> labels = new ArrayList<>();
 
-	public Collection<String> getColumnLabels()throws SQLException {
-		Collection<String> labels = new ArrayList<>();
-
-		for (int i = 0; i < getColumnCount(); i++) {
-			labels.add(wrappedMetadata.getColumnLabel(i + 1));
+		for (int i = 1; i <= wrappedMetadata.getColumnCount(); i++) {
+			labels.add(wrappedMetadata.getColumnLabel(i));
 		}
 
 		return labels;

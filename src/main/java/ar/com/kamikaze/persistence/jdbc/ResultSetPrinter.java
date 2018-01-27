@@ -12,10 +12,6 @@ public class ResultSetPrinter {
 	}
 
 	public void print(ResultSet resultSet) throws SQLException {
-		if (resultSet == null) {
-			return;
-		}
-
 		CollectedResultSetMetaData resultSetMetaData = new CollectedResultSetMetaData(resultSet.getMetaData());
 
 		printWriter.println(String.join("\t", resultSetMetaData.getColumnLabels()));

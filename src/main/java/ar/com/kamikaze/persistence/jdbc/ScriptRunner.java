@@ -9,9 +9,11 @@ import java.io.LineNumberReader;
 import java.io.PrintWriter;
 import java.io.Reader;
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.SimpleDateFormat;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -134,7 +136,7 @@ public class ScriptRunner {
 			if (command != null) {
 				this.execCommand(conn, command, lineReader);
 			}
-			if (!autoCommit) {
+			if (!conn.getAutoCommit()) {
 				conn.commit();
 			}
 		} catch (IOException e) {
@@ -166,7 +168,9 @@ public class ScriptRunner {
 			conn.commit();
 		}
 
-		resultSetPrinter.print(statement.getResultSet());
+		ResultSet resultSet = Optional.ofNullable(statement.getResultSet()).orElse(new NullResultSet());
+
+		resultSetPrinter.print(resultSet);
 
 		statement.close();
 	}

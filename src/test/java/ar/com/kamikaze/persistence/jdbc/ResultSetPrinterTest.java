@@ -58,6 +58,6 @@ public class ResultSetPrinterTest {
 
 	@Test
 	public void printNullResultSet() throws SQLException {
-		resultSetPrinter.print(null);
+		resultSetPrinter.print(new NullResultSet());
 	}
 }

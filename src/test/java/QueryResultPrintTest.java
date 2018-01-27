@@ -42,11 +42,9 @@ public class QueryResultPrintTest {
 
 		// ScriptRunner adds a space at the end of the statement read from the .sql file
 		Mockito.verify(logWriter).println("SELECT post.title, author.name as author FROM post, author WHERE post.author_id = author.id ORDER BY post.title ");
-		Mockito.verify(logWriter, times(3)).println("");
-		Mockito.verify(logWriter).print("TITLE\t");
-		Mockito.verify(logWriter).print("AUTHOR\t");
-		Mockito.verify(logWriter).print("author 1 post 1\t");
-		Mockito.verify(logWriter).print("author 1 post 2\t");
-		Mockito.verify(logWriter, times(2)).print("emystein\t");
+		Mockito.verify(logWriter).println("");
+		Mockito.verify(logWriter).println("TITLE\tAUTHOR");
+		Mockito.verify(logWriter).println("author 1 post 1\temystein");
+		Mockito.verify(logWriter).println("author 1 post 2\temystein");
 	}
 }

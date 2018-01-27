@@ -17,7 +17,6 @@ public class ScriptRunner {
     public static final Pattern delimP = Pattern.compile("^\\s*(--)?\\s*delimiter\\s*=?\\s*([^\\s]+)+\\s*.*$", Pattern.CASE_INSENSITIVE);
 
     private final Connection connection;
-
     private final boolean stopOnError;
     private final boolean autoCommit;
 
@@ -49,11 +48,7 @@ public class ScriptRunner {
 
 		try {
 			File logFile = new File(logPath);
-			if (logFile.exists()) {
-				logWriter = new PrintWriter(new FileWriter(logFile, true));
-			} else {
-				logWriter = new PrintWriter(new FileWriter(logFile, false));
-			}
+			logWriter = new PrintWriter(new FileWriter(logFile, logFile.exists()));
 		} catch(IOException e) {
 			System.err.println(String.format("Unable to access or create the %s log", logPath));
 		}
@@ -94,21 +89,16 @@ public class ScriptRunner {
      * @param reader - the source of the script
      */
     public void runScript(Reader reader) throws IOException, SQLException {
-        try {
-            boolean originalAutoCommit = connection.getAutoCommit();
-            try {
-                if (originalAutoCommit != this.autoCommit) {
-                    connection.setAutoCommit(this.autoCommit);
-                }
-                runScript(connection, reader);
-            } finally {
-                connection.setAutoCommit(originalAutoCommit);
-            }
-        } catch (IOException | SQLException e) {
-            throw e;
-        } catch (Exception e) {
-            throw new RuntimeException("Error running script.  Cause: " + e, e);
-        }
+		boolean originalAutoCommit = connection.getAutoCommit();
+
+		try {
+			if (originalAutoCommit != this.autoCommit) {
+				connection.setAutoCommit(this.autoCommit);
+			}
+			runScript(connection, reader);
+		} finally {
+			connection.setAutoCommit(originalAutoCommit);
+		}
     }
 
     /**

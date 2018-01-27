@@ -1,6 +1,7 @@
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.io.File;
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -71,7 +72,7 @@ public class ScriptRunnerTest {
 	}
 
 	@Test
-	public void aNewScriptRunnerShouldCreateLogFiles() {
+	public void aNewScriptRunnerShouldCreateLogFiles() throws IOException {
 		File logFile = new File("create_db.log");
 		assertThat(logFile.delete());
 
@@ -79,9 +80,11 @@ public class ScriptRunnerTest {
 		assertThat(errorLogFile.delete());
 
 		// exercise
-		ScriptRunner scriptRunner = new ScriptRunner(connection, true, true);
+		new ScriptRunner(connection, true, true);
 
 		assertThat(logFile.exists());
 		assertThat(errorLogFile.exists());
 	}
+
+
 }

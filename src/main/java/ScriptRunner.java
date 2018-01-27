@@ -1,5 +1,16 @@
-import java.io.*;
-import java.sql.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.LineNumberReader;
+import java.io.PrintWriter;
+import java.io.Reader;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.text.SimpleDateFormat;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -21,9 +32,9 @@ public class ScriptRunner {
 	private final boolean autoCommit;
 
 	@SuppressWarnings("UseOfSystemOutOrSystemErr")
-	private PrintWriter logWriter = null;
+	private final PrintWriter logWriter;
 	@SuppressWarnings("UseOfSystemOutOrSystemErr")
-	private PrintWriter errorLogWriter = null;
+	private final PrintWriter errorLogWriter;
 
 	private String delimiter = DEFAULT_DELIMITER;
 	private boolean fullLineDelimiter = false;
@@ -32,7 +43,7 @@ public class ScriptRunner {
 	 * Default constructor
 	 */
 	public ScriptRunner(Connection connection, boolean autoCommit,
-						boolean stopOnError) {
+						boolean stopOnError) throws IOException {
 		this.connection = connection;
 		this.autoCommit = autoCommit;
 		this.stopOnError = stopOnError;
@@ -43,40 +54,25 @@ public class ScriptRunner {
 		printlnError("\n-------\n" + timeStamp + "\n-------\n");
 	}
 
-	private PrintWriter createLogWriter(String logPath) {
-		PrintWriter logWriter = null;
+	public ScriptRunner(Connection connection, boolean autoCommit, boolean stopOnError, PrintWriter logWriter, PrintWriter errorLogWriter) throws IOException {
+		this.connection = connection;
+		this.autoCommit = autoCommit;
+		this.stopOnError = stopOnError;
+		this.logWriter = logWriter;
+		this.errorLogWriter = errorLogWriter;
+		String timeStamp = new SimpleDateFormat("dd/mm/yyyy HH:mm:ss").format(new java.util.Date());
+		println("\n-------\n" + timeStamp + "\n-------\n");
+		printlnError("\n-------\n" + timeStamp + "\n-------\n");
+	}
 
-		try {
-			File logFile = new File(logPath);
-			logWriter = new PrintWriter(new FileWriter(logFile, logFile.exists()));
-		} catch (IOException e) {
-			System.err.println(String.format("Unable to access or create the %s log", logPath));
-		}
-
-		return logWriter;
+	private PrintWriter createLogWriter(String logPath) throws IOException {
+		File logFile = new File(logPath);
+		return new PrintWriter(new FileWriter(logFile, logFile.exists()));
 	}
 
 	public void setDelimiter(String delimiter, boolean fullLineDelimiter) {
 		this.delimiter = delimiter;
 		this.fullLineDelimiter = fullLineDelimiter;
-	}
-
-	/**
-	 * Setter for logWriter property
-	 *
-	 * @param logWriter - the new value of the logWriter property
-	 */
-	public void setLogWriter(PrintWriter logWriter) {
-		this.logWriter = logWriter;
-	}
-
-	/**
-	 * Setter for errorLogWriter property
-	 *
-	 * @param errorLogWriter - the new value of the errorLogWriter property
-	 */
-	public void setErrorLogWriter(PrintWriter errorLogWriter) {
-		this.errorLogWriter = errorLogWriter;
 	}
 
 	public void runScript(String scriptPath) throws IOException, SQLException {
@@ -167,7 +163,6 @@ public class ScriptRunner {
 			final String errText = String.format("Error executing '%s' (line %d): %s",
 					command, lineReader.getLineNumber(), e.getMessage());
 			printlnError(errText);
-			System.err.println(errText);
 			if (stopOnError) {
 				throw new SQLException(errText, e);
 			}

@@ -1,10 +1,10 @@
+package ar.com.kamikaze.persistence.jdbc;
+
 import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -12,6 +12,8 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
+import ar.com.kamikaze.persistence.jdbc.ResultSetPrinter;
+import ar.com.kamikaze.persistence.jdbc.ScriptRunner;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ResultSetPrinterTest {

@@ -1,3 +1,5 @@
+package ar.com.kamikaze.persistence.jdbc;
+
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.util.ArrayList;

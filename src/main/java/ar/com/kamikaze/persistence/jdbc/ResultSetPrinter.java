@@ -1,3 +1,5 @@
+package ar.com.kamikaze.persistence.jdbc;
+
 import java.io.PrintWriter;
 import java.sql.ResultSet;
 import java.sql.SQLException;

@@ -1,16 +1,16 @@
-import static org.junit.Assert.*;
+package ar.com.kamikaze.persistence.jdbc;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.Collection;
 import java.util.List;
 import org.assertj.core.api.Assertions;
-import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import ar.com.kamikaze.persistence.jdbc.ResultSetCurrentRow;
+import ar.com.kamikaze.persistence.jdbc.ScriptRunner;
 
 public class ResultSetCurrentRowTest {
 	private static Connection connection;

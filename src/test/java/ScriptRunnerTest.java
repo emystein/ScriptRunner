@@ -58,16 +58,15 @@ public class ScriptRunnerTest {
 	public void runScript() throws Exception {
 		ScriptRunner scriptRunner = new ScriptRunner(connection, runnerAutoCommit, runnerStopOnError);
 		scriptRunner.runScript("src/test/resources/schema.sql");
+		scriptRunner.runScript("src/test/resources/insert-posts.sql");
 
 		Statement statement = connection.createStatement();
-		statement.execute("INSERT INTO author(id, name) VALUES(1, 'emystein');");
-		statement.execute("INSERT INTO post(title, author_id) VALUES('post 1', 1);");
 
 		// assertions
-		statement.execute("SELECT post.title, author.name FROM post, author WHERE post.author_id = author.id");
+		statement.execute("SELECT post.title, author.name FROM post, author WHERE post.author_id = author.id ORDER BY post.title");
 		ResultSet resultSet = statement.getResultSet();
 		resultSet.next();
-		assertThat(resultSet.getString("post.title")).isEqualTo("post 1");
+		assertThat(resultSet.getString("post.title")).isEqualTo("author 1 post 1");
 		assertThat(resultSet.getString("author.name")).isEqualTo("emystein");
 	}
 
@@ -85,6 +84,5 @@ public class ScriptRunnerTest {
 		assertThat(logFile.exists());
 		assertThat(errorLogFile.exists());
 	}
-
 
 }

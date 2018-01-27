@@ -50,8 +50,8 @@ public class ScriptRunner {
 		logWriter = createLogWriter("create_db.log");
 		errorLogWriter = createLogWriter("create_db_error.log");
 		String timeStamp = new SimpleDateFormat("dd/mm/yyyy HH:mm:ss").format(new java.util.Date());
-		println("\n-------\n" + timeStamp + "\n-------\n");
-		printlnError("\n-------\n" + timeStamp + "\n-------\n");
+		logWriter.println("\n-------\n" + timeStamp + "\n-------\n");
+		errorLogWriter.println("\n-------\n" + timeStamp + "\n-------\n");
 	}
 
 	public ScriptRunner(Connection connection, boolean autoCommit, boolean stopOnError, PrintWriter logWriter, PrintWriter errorLogWriter) throws IOException {
@@ -60,9 +60,9 @@ public class ScriptRunner {
 		this.stopOnError = stopOnError;
 		this.logWriter = logWriter;
 		this.errorLogWriter = errorLogWriter;
-		String timeStamp = new SimpleDateFormat("dd/mm/yyyy HH:mm:ss").format(new java.util.Date());
-		println("\n-------\n" + timeStamp + "\n-------\n");
-		printlnError("\n-------\n" + timeStamp + "\n-------\n");
+//		String timeStamp = new SimpleDateFormat("dd/mm/yyyy HH:mm:ss").format(new java.util.Date());
+//		logWriter.println("\n-------\n" + timeStamp + "\n-------\n");
+//		errorLogWriter.println("\n-------\n" + timeStamp + "\n-------\n");
 	}
 
 	private PrintWriter createLogWriter(String logPath) throws IOException {
@@ -154,7 +154,7 @@ public class ScriptRunner {
 							 LineNumberReader lineReader) throws SQLException {
 		Statement statement = conn.createStatement();
 
-		println(command);
+		println(command.toString());
 
 		boolean hasResults = false;
 		try {
@@ -204,19 +204,19 @@ public class ScriptRunner {
 
 	@SuppressWarnings("UseOfSystemOutOrSystemErr")
 
-	private void print(Object o) {
+	private void print(String o) {
 		if (logWriter != null) {
 			logWriter.print(o);
 		}
 	}
 
-	private void println(Object o) {
+	private void println(String o) {
 		if (logWriter != null) {
 			logWriter.println(o);
 		}
 	}
 
-	private void printlnError(Object o) {
+	private void printlnError(String o) {
 		if (errorLogWriter != null) {
 			errorLogWriter.println(o);
 		}

@@ -98,7 +98,7 @@ public class ScriptRunner {
 					command.append(line.substring(0, line
 							.lastIndexOf(delimiter)));
 					command.append(" ");
-					this.execCommand(conn, command, lineReader);
+					this.execCommand(conn, command.toString(), lineReader);
 					command = null;
 				} else {
 					command.append(line);
@@ -106,7 +106,7 @@ public class ScriptRunner {
 				}
 			}
 			if (command != null) {
-				this.execCommand(conn, command, lineReader);
+				this.execCommand(conn, command.toString(), lineReader);
 			}
 			if (!conn.getAutoCommit()) {
 				conn.commit();
@@ -118,13 +118,13 @@ public class ScriptRunner {
 		}
 	}
 
-	private void execCommand(Connection conn, StringBuffer command, LineNumberReader lineReader) throws SQLException {
+	private void execCommand(Connection conn, String command, LineNumberReader lineReader) throws SQLException {
 		Statement statement = conn.createStatement();
 
-		log.debug(command.toString());
+		log.debug(command);
 
 		try {
-			statement.execute(command.toString());
+			statement.execute(command);
 		} catch (SQLException e) {
 			log.error("Error executing '{}' (line {}): {}", command, lineReader.getLineNumber(), e.getMessage());
 			if (stopOnError) {

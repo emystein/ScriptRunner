@@ -65,19 +65,4 @@ public class ScriptRunnerTest {
 		assertThat(resultSet.getString("author.name")).isEqualTo("emystein");
 	}
 
-	@Test
-	public void aNewScriptRunnerShouldCreateLogFiles() throws IOException {
-		File logFile = new File("create_db.log");
-		assertThat(logFile.delete());
-
-		File errorLogFile = new File("create_db_error.log");
-		assertThat(errorLogFile.delete());
-
-		// exercise
-		new ScriptRunner(connection, true, true);
-
-		assertThat(logFile.exists());
-		assertThat(errorLogFile.exists());
-	}
-
 }

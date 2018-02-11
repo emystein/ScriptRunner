@@ -1,25 +1,20 @@
 package ar.com.kamikaze.persistence.jdbc;
 
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.LineNumberReader;
-import java.io.PrintWriter;
 import java.io.Reader;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.text.SimpleDateFormat;
 import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import lombok.extern.slf4j.Slf4j;
 
-/**
- * Tool to run database scripts
- */
+@Slf4j
 public class ScriptRunner {
 
 	private static final String DEFAULT_DELIMITER = ";";
@@ -33,40 +28,17 @@ public class ScriptRunner {
 	private final boolean stopOnError;
 	private final boolean autoCommit;
 
-	@SuppressWarnings("UseOfSystemOutOrSystemErr")
-	private final PrintWriter logWriter;
-	@SuppressWarnings("UseOfSystemOutOrSystemErr")
-	private final PrintWriter errorLogWriter;
-
 	private String delimiter = DEFAULT_DELIMITER;
 	private boolean fullLineDelimiter = false;
 	private ResultSetPrinter resultSetPrinter;
 
-	public ScriptRunner(Connection connection, boolean autoCommit, boolean stopOnError) throws IOException {
+	public ScriptRunner(Connection connection, boolean autoCommit, boolean stopOnError) {
 		this.connection = connection;
 		this.autoCommit = autoCommit;
 		this.stopOnError = stopOnError;
-		logWriter = createLogWriter("create_db.log");
-		errorLogWriter = createLogWriter("create_db_error.log");
-		resultSetPrinter = new ResultSetPrinter(logWriter);
-		String timeStamp = new SimpleDateFormat("dd/mm/yyyy HH:mm:ss").format(new java.util.Date());
-		logWriter.println("\n-------\n" + timeStamp + "\n-------\n");
-		errorLogWriter.println("\n-------\n" + timeStamp + "\n-------\n");
+		resultSetPrinter = new ResultSetPrinter();
 	}
 
-	public ScriptRunner(Connection connection, boolean autoCommit, boolean stopOnError, PrintWriter logWriter, PrintWriter errorLogWriter) throws IOException {
-		this.connection = connection;
-		this.autoCommit = autoCommit;
-		this.stopOnError = stopOnError;
-		this.logWriter = logWriter;
-		this.errorLogWriter = errorLogWriter;
-		resultSetPrinter = new ResultSetPrinter(logWriter);
-	}
-
-	private PrintWriter createLogWriter(String logPath) throws IOException {
-		File logFile = new File(logPath);
-		return new PrintWriter(new FileWriter(logFile, logFile.exists()));
-	}
 
 	public void setDelimiter(String delimiter, boolean fullLineDelimiter) {
 		this.delimiter = delimiter;
@@ -118,7 +90,7 @@ public class ScriptRunner {
 				} else if (delimMatch.matches()) {
 					setDelimiter(delimMatch.group(2), false);
 				} else if (trimmedLine.startsWith("--")) {
-					logWriter.println(trimmedLine);
+					log.debug(trimmedLine);
 				} else if (trimmedLine.length() < 1 || trimmedLine.startsWith("--")) {
 					// Do nothing
 				} else if (!fullLineDelimiter && trimmedLine.endsWith(delimiter)
@@ -143,24 +115,20 @@ public class ScriptRunner {
 			throw new IOException(String.format("Error executing '%s': %s", command, e.getMessage()), e);
 		} finally {
 			conn.rollback();
-			logWriter.flush();
-			errorLogWriter.flush();
 		}
 	}
 
 	private void execCommand(Connection conn, StringBuffer command, LineNumberReader lineReader) throws SQLException {
 		Statement statement = conn.createStatement();
 
-		logWriter.println(command.toString());
+		log.debug(command.toString());
 
 		try {
 			statement.execute(command.toString());
 		} catch (SQLException e) {
-			final String errText = String.format("Error executing '%s' (line %d): %s",
-					command, lineReader.getLineNumber(), e.getMessage());
-			errorLogWriter.println(errText);
+			log.error("Error executing '{}' (line {}): {}", command, lineReader.getLineNumber(), e.getMessage());
 			if (stopOnError) {
-				throw new SQLException(errText, e);
+				throw e;
 			}
 		}
 

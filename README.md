@@ -1,7 +1,7 @@
 # ScriptRunner
-Allows to virtually use `source script.sql` with your JDBC 
+Refactoring of https://github.com/BenoitDuffez/ScriptRunner
 
-Refactored code from https://github.com/BenoitDuffez/ScriptRunner
+Allows to virtually use `source script.sql` with your JDBC 
 
 # Example
 

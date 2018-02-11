@@ -1,6 +1,7 @@
 package ar.com.kamikaze.persistence.jdbc;
 
-import java.io.PrintWriter;
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -9,17 +10,14 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
-import ar.com.kamikaze.persistence.jdbc.ResultSetPrinter;
-import ar.com.kamikaze.persistence.jdbc.ScriptRunner;
+import ch.qos.logback.classic.Level;
+import ch.qos.logback.classic.spi.LoggingEvent;
 
 @RunWith(MockitoJUnitRunner.class)
-public class ResultSetPrinterTest {
+public class ResultSetPrinterTest extends MockLoggerTest {
 	private ResultSetPrinter resultSetPrinter;
-	@Mock
-	private PrintWriter logWriter;
 
 	private static Connection connection;
 
@@ -32,8 +30,9 @@ public class ResultSetPrinterTest {
 	}
 
 	@Before
-	public void setUp() {
-		resultSetPrinter = new ResultSetPrinter(logWriter);
+	public void setUp() throws Exception {
+		super.setUp();
+		resultSetPrinter = new ResultSetPrinter();
 	}
 
 	@Test
@@ -43,9 +42,7 @@ public class ResultSetPrinterTest {
 
 		resultSetPrinter.print(statement.getResultSet());
 
-		Mockito.verify(logWriter).println("TITLE\tAUTHOR");
-		Mockito.verify(logWriter).println("author 1 post 1\temystein");
-		Mockito.verify(logWriter).println("author 1 post 2\temystein");
+		assertDebugMessages("TITLE\tAUTHOR","","author 1 post 1\temystein","author 1 post 2\temystein");
 	}
 
 	@Test
@@ -60,4 +57,5 @@ public class ResultSetPrinterTest {
 	public void printNullResultSet() throws SQLException {
 		resultSetPrinter.print(new NullResultSet());
 	}
+
 }

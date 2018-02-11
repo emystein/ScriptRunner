@@ -28,7 +28,7 @@ public class ScriptExecutor {
 	public void runScript(Reader reader) throws IOException, SQLException {
 		try {
 			connection.setAutoCommit(autoCommit);
-			scriptRunner.runScript(this.connection, reader);
+			scriptRunner.runScript(connection, reader);
 		} finally {
 			connection.setAutoCommit(originalAutoCommit);
 		}

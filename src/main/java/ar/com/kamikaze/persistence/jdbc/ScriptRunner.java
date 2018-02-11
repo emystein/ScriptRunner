@@ -41,8 +41,9 @@ public class ScriptRunner {
 
 	public void runScript(ConnectionWrapper conn, Reader reader) throws IOException, SQLException {
 		LineNumberReader lineReader = new LineNumberReader(reader);
-		ResultSetPrinter resultSetPrinter = new ResultSetPrinter();
 		StringBuffer command = null;
+
+		ResultSetPrinter resultSetPrinter = new ResultSetPrinter();
 
 		try {
 			String line;
@@ -58,8 +59,6 @@ public class ScriptRunner {
 					setDelimiter(delimMatch.group(2), false);
 				} else if (trimmedLine.startsWith("--")) {
 					log.debug(trimmedLine);
-				} else if (trimmedLine.length() < 1 || trimmedLine.startsWith("--")) {
-					// Do nothing
 				} else if (!fullLineDelimiter && trimmedLine.endsWith(delimiter)
 						|| fullLineDelimiter && trimmedLine.equals(delimiter)) {
 					command.append(line.substring(0, line
@@ -89,6 +88,4 @@ public class ScriptRunner {
 			throw new IOException(String.format("Error executing '%s': %s", command, e.getMessage()), e);
 		}
 	}
-
-
 }

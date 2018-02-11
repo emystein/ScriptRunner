@@ -26,12 +26,10 @@ public class ScriptRunner {
 
 	private String delimiter = DEFAULT_DELIMITER;
 	private boolean fullLineDelimiter = false;
-	private ResultSetPrinter resultSetPrinter;
 
 	public ScriptRunner(Connection connection, boolean autoCommit, boolean stopOnError) throws SQLException {
 		this.scriptExecutor = new ScriptExecutor(connection, autoCommit, this);
 		this.stopOnError = stopOnError;
-		resultSetPrinter = new ResultSetPrinter();
 	}
 
 
@@ -54,8 +52,10 @@ public class ScriptRunner {
 	 * @throws IOException  if there is an error reading from the Reader
 	 */
 	public void runScript(ConnectionWrapper conn, Reader reader) throws IOException, SQLException {
-		StringBuffer command = null;
 		LineNumberReader lineReader = new LineNumberReader(reader);
+		CommandExecutor commandExecutor = new CommandExecutor(conn, new ResultSetPrinter());
+		StringBuffer command = null;
+		
 		try {
 			String line;
 			while ((line = lineReader.readLine()) != null) {
@@ -77,7 +77,7 @@ public class ScriptRunner {
 					command.append(line.substring(0, line
 							.lastIndexOf(delimiter)));
 					command.append(" ");
-					this.execCommand(conn, command.toString());
+					commandExecutor.execute(command.toString());
 					command = null;
 				} else {
 					command.append(line);
@@ -85,7 +85,7 @@ public class ScriptRunner {
 				}
 			}
 			if (command != null) {
-				this.execCommand(conn, command.toString());
+				commandExecutor.execute(command.toString());
 			}
 			conn.commit();
 		} catch (SQLException e) {
@@ -100,16 +100,5 @@ public class ScriptRunner {
 		}
 	}
 
-	private void execCommand(ConnectionWrapper conn, String command) throws SQLException {
-		Statement statement = conn.createStatement();
-
-		log.debug(command);
-
-		statement.execute(command);
-
-		ResultSet resultSet = Optional.ofNullable(statement.getResultSet()).orElse(new NullResultSet());
-
-		resultSetPrinter.print(resultSet);
-	}
 
 }

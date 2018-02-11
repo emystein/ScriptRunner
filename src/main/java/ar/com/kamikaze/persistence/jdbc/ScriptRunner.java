@@ -32,7 +32,6 @@ public class ScriptRunner {
 		this.stopOnError = stopOnError;
 	}
 
-
 	public void setDelimiter(String delimiter, boolean fullLineDelimiter) {
 		this.delimiter = delimiter;
 		this.fullLineDelimiter = fullLineDelimiter;
@@ -53,9 +52,9 @@ public class ScriptRunner {
 	 */
 	public void runScript(ConnectionWrapper conn, Reader reader) throws IOException, SQLException {
 		LineNumberReader lineReader = new LineNumberReader(reader);
-		CommandExecutor commandExecutor = new CommandExecutor(conn, new ResultSetPrinter());
+		ResultSetPrinter resultSetPrinter = new ResultSetPrinter();
 		StringBuffer command = null;
-		
+
 		try {
 			String line;
 			while ((line = lineReader.readLine()) != null) {
@@ -77,7 +76,8 @@ public class ScriptRunner {
 					command.append(line.substring(0, line
 							.lastIndexOf(delimiter)));
 					command.append(" ");
-					commandExecutor.execute(command.toString());
+					ResultSet resultSet = conn.execute(command.toString());
+					resultSetPrinter.print(resultSet);
 					command = null;
 				} else {
 					command.append(line);
@@ -85,18 +85,19 @@ public class ScriptRunner {
 				}
 			}
 			if (command != null) {
-				commandExecutor.execute(command.toString());
+				ResultSet resultSet = conn.execute(command.toString());
+				resultSetPrinter.print(resultSet);
 			}
 			conn.commit();
 		} catch (SQLException e) {
+			conn.rollback();
 			log.error("Error executing '{}' (line {}): {}", command, lineReader.getLineNumber(), e.getMessage());
 			if (stopOnError) {
 				throw e;
 			}
 		} catch (IOException e) {
-			throw new IOException(String.format("Error executing '%s': %s", command, e.getMessage()), e);
-		} finally {
 			conn.rollback();
+			throw new IOException(String.format("Error executing '%s': %s", command, e.getMessage()), e);
 		}
 	}
 

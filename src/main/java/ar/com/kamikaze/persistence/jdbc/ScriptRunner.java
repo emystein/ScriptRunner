@@ -1,7 +1,5 @@
 package ar.com.kamikaze.persistence.jdbc;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.LineNumberReader;
 import java.io.Reader;
@@ -16,7 +14,6 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class ScriptRunner {
-
 	private static final String DEFAULT_DELIMITER = ";";
 	/**
 	 * regex to detect delimiter.
@@ -24,17 +21,15 @@ public class ScriptRunner {
 	 */
 	public static final Pattern delimP = Pattern.compile("^\\s*(--)?\\s*delimiter\\s*=?\\s*([^\\s]+)+\\s*.*$", Pattern.CASE_INSENSITIVE);
 
-	private final Connection connection;
+	private final ScriptExecutor scriptExecutor;
 	private final boolean stopOnError;
-	private final boolean autoCommit;
 
 	private String delimiter = DEFAULT_DELIMITER;
 	private boolean fullLineDelimiter = false;
 	private ResultSetPrinter resultSetPrinter;
 
-	public ScriptRunner(Connection connection, boolean autoCommit, boolean stopOnError) {
-		this.connection = connection;
-		this.autoCommit = autoCommit;
+	public ScriptRunner(Connection connection, boolean autoCommit, boolean stopOnError) throws SQLException {
+		this.scriptExecutor = new ScriptExecutor(connection, autoCommit, this);
 		this.stopOnError = stopOnError;
 		resultSetPrinter = new ResultSetPrinter();
 	}
@@ -46,38 +41,22 @@ public class ScriptRunner {
 	}
 
 	public void runScript(String scriptPath) throws IOException, SQLException {
-		runScript(new BufferedReader(new FileReader(scriptPath)));
-	}
-
-	/**
-	 * Runs an SQL script (read in using the Reader parameter)
-	 *
-	 * @param reader - the source of the script
-	 */
-	public void runScript(Reader reader) throws IOException, SQLException {
-		boolean originalAutoCommit = connection.getAutoCommit();
-
-		try {
-			connection.setAutoCommit(this.autoCommit);
-			runScript(connection, reader);
-		} finally {
-			connection.setAutoCommit(originalAutoCommit);
-		}
+		scriptExecutor.runScript(scriptPath);
 	}
 
 	/**
 	 * Runs an SQL script (read in using the Reader parameter) using the
-	 * connection passed in
+	 * scriptExecutor passed in
 	 *
-	 * @param conn   - the connection to use for the script
+	 * @param conn   - the scriptExecutor to use for the script
 	 * @param reader - the source of the script
 	 * @throws SQLException if any SQL errors occur
 	 * @throws IOException  if there is an error reading from the Reader
 	 */
-	private void runScript(Connection conn, Reader reader) throws IOException, SQLException {
+	public void runScript(ConnectionWrapper conn, Reader reader) throws IOException, SQLException {
 		StringBuffer command = null;
+		LineNumberReader lineReader = new LineNumberReader(reader);
 		try {
-			LineNumberReader lineReader = new LineNumberReader(reader);
 			String line;
 			while ((line = lineReader.readLine()) != null) {
 				if (command == null) {
@@ -98,7 +77,7 @@ public class ScriptRunner {
 					command.append(line.substring(0, line
 							.lastIndexOf(delimiter)));
 					command.append(" ");
-					this.execCommand(conn, command.toString(), lineReader);
+					this.execCommand(conn, command.toString());
 					command = null;
 				} else {
 					command.append(line);
@@ -106,10 +85,13 @@ public class ScriptRunner {
 				}
 			}
 			if (command != null) {
-				this.execCommand(conn, command.toString(), lineReader);
+				this.execCommand(conn, command.toString());
 			}
-			if (!conn.getAutoCommit()) {
-				conn.commit();
+			conn.commit();
+		} catch (SQLException e) {
+			log.error("Error executing '{}' (line {}): {}", command, lineReader.getLineNumber(), e.getMessage());
+			if (stopOnError) {
+				throw e;
 			}
 		} catch (IOException e) {
 			throw new IOException(String.format("Error executing '%s': %s", command, e.getMessage()), e);
@@ -118,29 +100,16 @@ public class ScriptRunner {
 		}
 	}
 
-	private void execCommand(Connection conn, String command, LineNumberReader lineReader) throws SQLException {
+	private void execCommand(ConnectionWrapper conn, String command) throws SQLException {
 		Statement statement = conn.createStatement();
 
 		log.debug(command);
 
-		try {
-			statement.execute(command);
-		} catch (SQLException e) {
-			log.error("Error executing '{}' (line {}): {}", command, lineReader.getLineNumber(), e.getMessage());
-			if (stopOnError) {
-				throw e;
-			}
-		}
-
-		if (!conn.getAutoCommit()) {
-			conn.commit();
-		}
+		statement.execute(command);
 
 		ResultSet resultSet = Optional.ofNullable(statement.getResultSet()).orElse(new NullResultSet());
 
 		resultSetPrinter.print(resultSet);
-
-		statement.close();
 	}
 
 }

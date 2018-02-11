@@ -6,8 +6,6 @@ import java.io.Reader;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import lombok.extern.slf4j.Slf4j;
@@ -19,7 +17,7 @@ public class ScriptRunner {
 	 * regex to detect delimiter.
 	 * ignores spaces, allows delimiter in comment, allows an equals-sign
 	 */
-	public static final Pattern delimP = Pattern.compile("^\\s*(--)?\\s*delimiter\\s*=?\\s*([^\\s]+)+\\s*.*$", Pattern.CASE_INSENSITIVE);
+	public static final Pattern delimiterDetectionPattern = Pattern.compile("^\\s*(--)?\\s*delimiter\\s*=?\\s*([^\\s]+)+\\s*.*$", Pattern.CASE_INSENSITIVE);
 
 	private final ScriptExecutor scriptExecutor;
 	private final boolean stopOnError;
@@ -41,15 +39,6 @@ public class ScriptRunner {
 		scriptExecutor.runScript(scriptPath);
 	}
 
-	/**
-	 * Runs an SQL script (read in using the Reader parameter) using the
-	 * scriptExecutor passed in
-	 *
-	 * @param conn   - the scriptExecutor to use for the script
-	 * @param reader - the source of the script
-	 * @throws SQLException if any SQL errors occur
-	 * @throws IOException  if there is an error reading from the Reader
-	 */
 	public void runScript(ConnectionWrapper conn, Reader reader) throws IOException, SQLException {
 		LineNumberReader lineReader = new LineNumberReader(reader);
 		ResultSetPrinter resultSetPrinter = new ResultSetPrinter();
@@ -62,7 +51,7 @@ public class ScriptRunner {
 					command = new StringBuffer();
 				}
 				String trimmedLine = line.trim();
-				final Matcher delimMatch = delimP.matcher(trimmedLine);
+				final Matcher delimMatch = delimiterDetectionPattern.matcher(trimmedLine);
 				if (trimmedLine.length() < 1 || trimmedLine.startsWith("//")) {
 					// Do nothing
 				} else if (delimMatch.matches()) {

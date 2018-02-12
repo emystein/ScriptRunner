@@ -25,7 +25,7 @@ public class ConnectionWrapperTest {
 	}
 
 	@Test
-	public void executeQueryShouldReturnResultSet() throws Exception {
+	public void executingQueryOnExistingDataShouldReturnResultSet() throws Exception {
 		ResultSet resultSet = connectionWrapper.execute("SELECT * FROM author");
 
 		resultSet.next();
@@ -33,4 +33,10 @@ public class ConnectionWrapperTest {
 		assertThat(resultSet.getString("name")).isEqualTo("emenendez");
 	}
 
+	@Test
+	public void executingInsertShouldReturnEmptyResultSet() throws Exception {
+		ResultSet resultSet = connectionWrapper.execute("INSERT INTO author(id, name) VALUES(2, 'fbaron');");
+
+		assertThat(resultSet).isInstanceOf(NullResultSet.class);
+	}
 }

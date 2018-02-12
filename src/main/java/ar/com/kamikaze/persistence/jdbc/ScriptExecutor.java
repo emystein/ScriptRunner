@@ -48,22 +48,17 @@ public class ScriptExecutor {
 	public void run(List<ScriptCommand> commands) throws SQLException {
 		ResultSetPrinter resultSetPrinter = new ResultSetPrinter();
 
-		ScriptCommand command = new NullScriptCommand();
-
 		try {
-			Iterator<ScriptCommand> iterator = commands.iterator();
-
-			while (iterator.hasNext()) {
-				command = iterator.next();
+			for (ScriptCommand command : commands) {
 				ResultSet resultSet = connection.execute(command);
 				resultSetPrinter.print(resultSet);
 			}
 
 			connection.commit();
 		} catch (SQLException e) {
-			connection.rollback();
+			log.error(e.getMessage(), e);
 
-			log.error("Error executing {}: {}", command, e.getMessage());
+			connection.rollback();
 
 			if (stopOnError) {
 				throw e;

@@ -26,7 +26,11 @@ public abstract class ConnectionWrapper {
 	}
 
 	public ResultSet execute(ScriptCommand command) throws SQLException {
-		return execute(command.getCommand());
+		try {
+			return execute(command.getCommand());
+		} catch (SQLException e) {
+			throw new ScriptCommandException(command, e);
+		}
 	}
 
 	public ResultSet execute(String command) throws SQLException {

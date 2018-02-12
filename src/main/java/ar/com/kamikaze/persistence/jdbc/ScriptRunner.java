@@ -13,11 +13,6 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class ScriptRunner {
 	private static final String DEFAULT_DELIMITER = ";";
-	/**
-	 * regex to detect delimiter.
-	 * ignores spaces, allows delimiter in comment, allows an equals-sign
-	 */
-	public static final Pattern delimiterDetectionPattern = Pattern.compile("^\\s*(--)?\\s*delimiter\\s*=?\\s*([^\\s]+)+\\s*.*$", Pattern.CASE_INSENSITIVE);
 
 	private final ScriptExecutor scriptExecutor;
 	private final boolean stopOnError;
@@ -40,6 +35,9 @@ public class ScriptRunner {
 	}
 
 	public void runScript(ConnectionWrapper conn, Reader reader) throws IOException, SQLException {
+		// ignores spaces, allows delimiter in comment, allows an equals-sign
+		final Pattern delimiterDetectionPattern = Pattern.compile("^\\s*(--)?\\s*delimiter\\s*=?\\s*([^\\s]+)+\\s*.*$", Pattern.CASE_INSENSITIVE);
+
 		LineNumberReader lineReader = new LineNumberReader(reader);
 		StringBuffer command = null;
 

@@ -26,9 +26,9 @@ public abstract class ConnectionWrapper {
 	}
 
 	public ResultSet execute(String command) throws SQLException {
-		Statement statement = connection.createStatement();
-
 		log.debug(command);
+
+		Statement statement = connection.createStatement();
 
 		statement.execute(command);
 

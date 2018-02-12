@@ -25,6 +25,10 @@ public abstract class ConnectionWrapper {
 		connection.setAutoCommit(autoCommit);
 	}
 
+	public ResultSet execute(ScriptCommand command) throws SQLException {
+		return execute(command.getCommand());
+	}
+
 	public ResultSet execute(String command) throws SQLException {
 		log.debug(command);
 

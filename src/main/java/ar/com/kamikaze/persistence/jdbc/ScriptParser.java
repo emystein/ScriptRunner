@@ -45,8 +45,7 @@ public class ScriptParser {
 					log.debug(trimmedLine);
 				} else if (!fullLineDelimiter && trimmedLine.endsWith(delimiter)
 						|| fullLineDelimiter && trimmedLine.equals(delimiter)) {
-					command.append(line.substring(0, line
-							.lastIndexOf(delimiter)));
+					command.append(line.substring(0, line.lastIndexOf(delimiter)));
 					command.append(" ");
 					commands.add(new ScriptCommand(lineReader.getLineNumber(), command.toString()));
 					command = null;
@@ -59,7 +58,7 @@ public class ScriptParser {
 				commands.add(new ScriptCommand(lineReader.getLineNumber(), command.toString()));
 			}
 		} catch (IOException e) {
-			throw new IOException(String.format("Error executing '%s': %s", command, e.getMessage()), e);
+			throw new IOException(String.format("Error parsing line %d: %s", lineReader.getLineNumber(), e.getMessage()), e);
 		}
 
 		return commands;

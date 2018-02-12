@@ -45,24 +45,23 @@ public class ScriptExecutor {
 		}
 	}
 
-	public void run(List<ScriptCommand> commands) throws SQLException {
+	private void run(List<ScriptCommand> commands) throws SQLException {
 		ResultSetPrinter resultSetPrinter = new ResultSetPrinter();
 
-		try {
-			for (ScriptCommand command : commands) {
+		for (ScriptCommand command : commands) {
+			try {
 				ResultSet resultSet = connection.execute(command);
 				resultSetPrinter.print(resultSet);
-			}
+			} catch (SQLException e) {
+				log.error(e.getMessage(), e);
 
-			connection.commit();
-		} catch (SQLException e) {
-			log.error(e.getMessage(), e);
-
-			connection.rollback();
-
-			if (stopOnError) {
-				throw e;
+				if (stopOnError) {
+					connection.rollback();
+					throw e;
+				}
 			}
 		}
+
+		connection.commit();
 	}
 }

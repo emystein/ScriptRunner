@@ -3,15 +3,10 @@ package ar.com.kamikaze.persistence.jdbc;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.LineNumberReader;
 import java.io.Reader;
 import java.sql.Connection;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -19,18 +14,12 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 public class ScriptRunner {
-	protected ConnectionWrapper connection;
-	private boolean autoCommit;
-	boolean originalAutoCommit;
-	private boolean stopOnError;
+	private ConnectionWrapper connection;
 	private final ScriptParser scriptParser = new ScriptParser();
 
 	public ScriptRunner(Connection connection, boolean autoCommit, boolean stopOnError) throws SQLException {
-		this.connection = autoCommit ? new AutoCommitConnection(connection) : new ManualCommitConnection(connection);
-		this.autoCommit = autoCommit;
-		this.originalAutoCommit = connection.getAutoCommit();
-		this.connection.setAutoCommit(autoCommit);
-		this.stopOnError = stopOnError;
+		this.connection = autoCommit ? new AutoCommitConnection(connection, stopOnError) : new ManualCommitConnection(connection, stopOnError);
+		this.connection.addCommandResultEventListener(new PrintCommandResultEventListener());
 	}
 
 	public void setDelimiter(String delimiter, boolean fullLineDelimiter) {
@@ -42,32 +31,8 @@ public class ScriptRunner {
 	}
 
 	public void runScript(Reader reader) throws IOException, SQLException {
-		try {
-			connection.setAutoCommit(autoCommit);
-			List<ScriptCommand> commands = scriptParser.parse(reader);
-			run(commands);
-		} finally {
-			connection.setAutoCommit(originalAutoCommit);
-		}
+		List<ScriptCommand> commands = scriptParser.parse(reader);
+		connection.run(commands);
 	}
 
-	private void run(List<ScriptCommand> commands) throws SQLException {
-		ResultSetPrinter resultSetPrinter = new ResultSetPrinter();
-
-		for (ScriptCommand command : commands) {
-			try {
-				ResultSet resultSet = connection.execute(command);
-				resultSetPrinter.print(resultSet);
-			} catch (SQLException e) {
-				log.error(e.getMessage(), e);
-
-				if (stopOnError) {
-					connection.rollback();
-					throw e;
-				}
-			}
-		}
-
-		connection.commit();
-	}
 }

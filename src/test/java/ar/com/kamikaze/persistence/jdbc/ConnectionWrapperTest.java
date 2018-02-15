@@ -16,7 +16,7 @@ public class ConnectionWrapperTest {
 	@Before
 	public void setUp() throws Exception {
 		connection = DriverManager.getConnection("jdbc:h2:mem:test");
-		connectionWrapper = new ManualCommitConnection(connection);
+		connectionWrapper = new ManualCommitConnection(connection, false);
 
 		Statement statement = connection.createStatement();
 		statement.execute("DROP TABLE IF EXISTS author;");

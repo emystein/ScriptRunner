@@ -41,10 +41,4 @@ public class ConnectionWrapperTest {
 		assertThat(resultSet).isInstanceOf(NullResultSet.class);
 	}
 
-	@Test(expected = SQLException.class)
-	public void givenStopOnErrorIsSetWhenCommandFailsThenConnectionShouldThrowException() throws SQLException {
-		ScriptCommand failCommand = new ScriptCommand(1, "BOOM");
-
-		connectionWrapper.execute(failCommand, new RollbackTransactionErrorHandler(connectionWrapper));
-	}
 }

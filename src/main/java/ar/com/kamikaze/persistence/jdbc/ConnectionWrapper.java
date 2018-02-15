@@ -13,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public abstract class ConnectionWrapper {
 	protected final Connection connection;
+	private ErrorHandler errorHandler;
 	private boolean autoCommit;
 	private boolean originalAutoCommit;
 	private List<CommandResultEventListener> commandResultEventListeners = new ArrayList<>();
@@ -21,6 +22,10 @@ public abstract class ConnectionWrapper {
 		this.connection = connection;
 		this.autoCommit = autoCommit;
 		this.originalAutoCommit = connection.getAutoCommit();
+	}
+
+	public void setErrorHandler(ErrorHandler errorHandler) {
+		this.errorHandler = errorHandler;
 	}
 
 	public abstract void commit() throws SQLException;
@@ -37,13 +42,13 @@ public abstract class ConnectionWrapper {
 		setAutoCommit(originalAutoCommit);
 	}
 
-
 	// TODO: review how to implement pattern: setAutoCommit(autoCommit) -> execute commands -> setAutoCommit(originalAutoCommit)
-	public void run(List<ScriptCommand> commands, ErrorHandler errorHandler) throws SQLException {
+
+	public void run(List<ScriptCommand> commands) throws SQLException {
 		setAutoCommit(autoCommit);
 
 		for (ScriptCommand command : commands) {
-			execute(command, errorHandler);
+			execute(command);
 		}
 
 		commit();
@@ -51,20 +56,12 @@ public abstract class ConnectionWrapper {
 		setAutoCommit(originalAutoCommit);
 	}
 
-	public void execute(ScriptCommand command, ErrorHandler errorHandler) throws SQLException {
+	public void execute(ScriptCommand command) throws SQLException {
 		try {
-			execute(command);
+			execute(command.getCommand());
 		} catch (SQLException e) {
-			log.error(e.getMessage(), e);
+			log.error("Error executing " + command + ": " + e.getMessage(), e);
 			errorHandler.handle(e);
-		}
-	}
-
-	private ResultSet execute(ScriptCommand command) throws SQLException {
-		try {
-			return execute(command.getCommand());
-		} catch (SQLException e) {
-			throw new ScriptCommandException(command, e);
 		}
 	}
 

@@ -16,10 +16,12 @@ import lombok.extern.slf4j.Slf4j;
 public class ScriptRunner {
 	private ConnectionWrapper connection;
 	private final ScriptParser scriptParser = new ScriptParser();
+	private ErrorHandler errorHandler;
 
 	public ScriptRunner(Connection connection, boolean autoCommit, boolean stopOnError) throws SQLException {
-		this.connection = autoCommit ? new AutoCommitConnection(connection, stopOnError) : new ManualCommitConnection(connection, stopOnError);
+		this.connection = autoCommit ? new AutoCommitConnection(connection) : new ManualCommitConnection(connection);
 		this.connection.addCommandResultEventListener(new PrintCommandResultEventListener());
+		this.errorHandler = stopOnError ? new RollbackTransactionErrorHandler(this.connection) : new ContinueExecutionErrorHandler();
 	}
 
 	public void setDelimiter(String delimiter, boolean fullLineDelimiter) {
@@ -32,7 +34,7 @@ public class ScriptRunner {
 
 	public void runScript(Reader reader) throws IOException, SQLException {
 		List<ScriptCommand> commands = scriptParser.parse(reader);
-		connection.run(commands);
+		connection.run(commands, errorHandler);
 	}
 
 }

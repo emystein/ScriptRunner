@@ -4,8 +4,8 @@ import java.sql.Connection;
 import java.sql.SQLException;
 
 public class AutoCommitConnection extends ConnectionWrapper {
-	public AutoCommitConnection(Connection connection, boolean stopOnError) throws SQLException {
-		super(connection, true, stopOnError);
+	public AutoCommitConnection(Connection connection) throws SQLException {
+		super(connection, true);
 	}
 
 	public void commit() throws SQLException {

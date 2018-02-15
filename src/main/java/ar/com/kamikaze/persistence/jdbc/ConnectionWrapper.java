@@ -9,19 +9,18 @@ import java.util.List;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 
+//TODO: split this class in two: 1. connection behavior and 2. command execution
 @Slf4j
 public abstract class ConnectionWrapper {
 	protected final Connection connection;
 	private boolean autoCommit;
 	private boolean originalAutoCommit;
-	private boolean stopOnError;
 	private List<CommandResultEventListener> commandResultEventListeners = new ArrayList<>();
 
-	protected ConnectionWrapper(Connection connection, boolean autoCommit, boolean stopOnError) throws SQLException {
+	protected ConnectionWrapper(Connection connection, boolean autoCommit) throws SQLException {
 		this.connection = connection;
 		this.autoCommit = autoCommit;
 		this.originalAutoCommit = connection.getAutoCommit();
-		this.stopOnError = stopOnError;
 	}
 
 	public abstract void commit() throws SQLException;
@@ -34,22 +33,17 @@ public abstract class ConnectionWrapper {
 		connection.setAutoCommit(autoCommit);
 	}
 
+	public void rollbackAutoCommit() throws SQLException {
+		setAutoCommit(originalAutoCommit);
+	}
+
+
 	// TODO: review how to implement pattern: setAutoCommit(autoCommit) -> execute commands -> setAutoCommit(originalAutoCommit)
-	public void run(List<ScriptCommand> commands) throws SQLException {
+	public void run(List<ScriptCommand> commands, ErrorHandler errorHandler) throws SQLException {
 		setAutoCommit(autoCommit);
 
 		for (ScriptCommand command : commands) {
-			try {
-				execute(command);
-			} catch (SQLException e) {
-				log.error(e.getMessage(), e);
-
-				if (stopOnError) {
-					rollback();
-					setAutoCommit(originalAutoCommit);
-					throw e;
-				}
-			}
+			execute(command, errorHandler);
 		}
 
 		commit();
@@ -57,7 +51,16 @@ public abstract class ConnectionWrapper {
 		setAutoCommit(originalAutoCommit);
 	}
 
-	public ResultSet execute(ScriptCommand command) throws SQLException {
+	public void execute(ScriptCommand command, ErrorHandler errorHandler) throws SQLException {
+		try {
+			execute(command);
+		} catch (SQLException e) {
+			log.error(e.getMessage(), e);
+			errorHandler.handle(e);
+		}
+	}
+
+	private ResultSet execute(ScriptCommand command) throws SQLException {
 		try {
 			return execute(command.getCommand());
 		} catch (SQLException e) {

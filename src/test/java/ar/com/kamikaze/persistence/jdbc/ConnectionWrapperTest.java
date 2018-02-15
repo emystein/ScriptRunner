@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 import org.junit.Before;
 import org.junit.Test;
@@ -16,7 +17,7 @@ public class ConnectionWrapperTest {
 	@Before
 	public void setUp() throws Exception {
 		connection = DriverManager.getConnection("jdbc:h2:mem:test");
-		connectionWrapper = new ManualCommitConnection(connection, false);
+		connectionWrapper = new ManualCommitConnection(connection);
 
 		Statement statement = connection.createStatement();
 		statement.execute("DROP TABLE IF EXISTS author;");
@@ -38,5 +39,12 @@ public class ConnectionWrapperTest {
 		ResultSet resultSet = connectionWrapper.execute("INSERT INTO author(id, name) VALUES(2, 'fbaron');");
 
 		assertThat(resultSet).isInstanceOf(NullResultSet.class);
+	}
+
+	@Test(expected = SQLException.class)
+	public void givenStopOnErrorIsSetWhenCommandFailsThenConnectionShouldThrowException() throws SQLException {
+		ScriptCommand failCommand = new ScriptCommand(1, "BOOM");
+
+		connectionWrapper.execute(failCommand, new RollbackTransactionErrorHandler(connectionWrapper));
 	}
 }

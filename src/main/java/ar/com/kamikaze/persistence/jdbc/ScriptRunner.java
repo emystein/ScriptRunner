@@ -21,7 +21,7 @@ public class ScriptRunner {
 		this.connection = autoCommit ? new AutoCommitConnection(connection) : new ManualCommitConnection(connection);
 		ErrorHandler errorHandler = stopOnError ? new RollbackTransactionErrorHandler(this.connection) : new ContinueExecutionErrorHandler();
 		this.connection.setErrorHandler(errorHandler);
-		this.connection.addCommandResultEventListener(new PrintCommandResultEventListener());
+		this.connection.addCommandResultListener(new PrintCommandResultListener());
 	}
 
 	public void setDelimiter(String delimiter, boolean fullLineDelimiter) {

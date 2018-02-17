@@ -16,7 +16,7 @@ public abstract class ConnectionWrapper {
 	private ErrorHandler errorHandler;
 	private boolean autoCommit;
 	private boolean originalAutoCommit;
-	private List<CommandResultEventListener> commandResultEventListeners = new ArrayList<>();
+	private List<CommandResultListener> commandResultListeners = new ArrayList<>();
 
 	protected ConnectionWrapper(Connection connection, boolean autoCommit) throws SQLException {
 		this.connection = connection;
@@ -28,14 +28,14 @@ public abstract class ConnectionWrapper {
 		this.errorHandler = errorHandler;
 	}
 
+	public void addCommandResultListener(CommandResultListener eventListener) {
+		commandResultListeners.add(eventListener);
+	}
+
 	public abstract void commit() throws SQLException;
 
 	public void rollback() throws SQLException {
 		connection.rollback();
-	}
-
-	public void setAutoCommit(boolean autoCommit) throws SQLException {
-		connection.setAutoCommit(autoCommit);
 	}
 
 	public void rollbackAutoCommit() throws SQLException {
@@ -43,7 +43,6 @@ public abstract class ConnectionWrapper {
 	}
 
 	// TODO: review how to implement pattern: setAutoCommit(autoCommit) -> execute commands -> setAutoCommit(originalAutoCommit)
-
 	public void run(List<ScriptCommand> commands) throws SQLException {
 		setAutoCommit(autoCommit);
 
@@ -56,34 +55,40 @@ public abstract class ConnectionWrapper {
 		setAutoCommit(originalAutoCommit);
 	}
 
-	public void execute(ScriptCommand command) throws SQLException {
-		try {
-			execute(command.getCommand());
-		} catch (SQLException e) {
-			log.error("Error executing " + command + ": " + e.getMessage(), e);
-			errorHandler.handle(e);
-		}
+	public ResultSet execute(ScriptCommand command) throws SQLException {
+		return execute(command.getCommand());
 	}
 
 	public ResultSet execute(String command) throws SQLException {
 		log.debug(command);
 
-		Statement statement = connection.createStatement();
+		ResultSet resultSet = new NullResultSet();
 
-		statement.execute(command);
+		try {
+			Statement statement = connection.createStatement();
 
-		ResultSet resultSet = Optional.ofNullable(statement.getResultSet()).orElse(new NullResultSet());
+			statement.execute(command);
 
-		CommandResult commandResult = new CommandResult(command, resultSet);
-
-		for (CommandResultEventListener eventListener : commandResultEventListeners) {
-			eventListener.onCommandResult(commandResult);
+			resultSet = Optional.ofNullable(statement.getResultSet()).orElse(new NullResultSet());
+		} catch (SQLException e) {
+			log.error("Error executing " + command + ": " + e.getMessage(), e);
+			errorHandler.handle(e);
 		}
+
+		triggerCommandResultEvent(command, resultSet);
 
 		return resultSet;
 	}
 
-	public void addCommandResultEventListener(CommandResultEventListener eventListener) {
-		commandResultEventListeners.add(eventListener);
+	private void triggerCommandResultEvent(String command, ResultSet resultSet) throws SQLException {
+		CommandResult commandResult = new CommandResult(command, resultSet);
+
+		for (CommandResultListener eventListener : commandResultListeners) {
+			eventListener.handle(commandResult);
+		}
+	}
+
+	private void setAutoCommit(boolean autoCommit) throws SQLException {
+		connection.setAutoCommit(autoCommit);
 	}
 }

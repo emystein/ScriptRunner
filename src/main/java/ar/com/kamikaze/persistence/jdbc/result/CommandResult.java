@@ -1,4 +1,4 @@
-package ar.com.kamikaze.persistence.jdbc;
+package ar.com.kamikaze.persistence.jdbc.result;
 
 import java.sql.ResultSet;
 import lombok.Data;

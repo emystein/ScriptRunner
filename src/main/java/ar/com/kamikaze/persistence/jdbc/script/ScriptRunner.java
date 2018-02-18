@@ -1,4 +1,4 @@
-package ar.com.kamikaze.persistence.jdbc;
+package ar.com.kamikaze.persistence.jdbc.script;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -7,6 +7,13 @@ import java.io.Reader;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
+import ar.com.kamikaze.persistence.jdbc.connection.AutoCommitConnection;
+import ar.com.kamikaze.persistence.jdbc.connection.ConnectionWrapper;
+import ar.com.kamikaze.persistence.jdbc.connection.ManualCommitConnection;
+import ar.com.kamikaze.persistence.jdbc.error.ContinueExecutionErrorHandler;
+import ar.com.kamikaze.persistence.jdbc.error.ErrorHandler;
+import ar.com.kamikaze.persistence.jdbc.error.RollbackTransactionErrorHandler;
+import ar.com.kamikaze.persistence.jdbc.result.PrintCommandResultListener;
 import lombok.extern.slf4j.Slf4j;
 
 /**

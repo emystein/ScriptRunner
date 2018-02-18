@@ -1,4 +1,4 @@
-package ar.com.kamikaze.persistence.jdbc;
+package ar.com.kamikaze.persistence.jdbc.connection;
 
 import java.sql.Connection;
 import java.sql.SQLException;

@@ -1,4 +1,4 @@
-package ar.com.kamikaze.persistence.jdbc;
+package ar.com.kamikaze.persistence.jdbc.connection;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -8,6 +8,8 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
+import ar.com.kamikaze.persistence.jdbc.script.ScriptCommand;
+import ar.com.kamikaze.persistence.jdbc.error.ErrorHandler;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ErrorHandlingConnectionWrapperTest {

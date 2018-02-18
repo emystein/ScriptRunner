@@ -1,4 +1,4 @@
-package ar.com.kamikaze.persistence.jdbc;
+package ar.com.kamikaze.persistence.jdbc.script;
 
 import java.io.IOException;
 import java.io.LineNumberReader;

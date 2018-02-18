@@ -1,4 +1,4 @@
-package ar.com.kamikaze.persistence.jdbc;
+package ar.com.kamikaze.persistence.jdbc.result;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -9,8 +9,7 @@ import java.util.List;
 import org.assertj.core.api.Assertions;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import ar.com.kamikaze.persistence.jdbc.ResultSetCurrentRow;
-import ar.com.kamikaze.persistence.jdbc.ScriptRunner;
+import ar.com.kamikaze.persistence.jdbc.script.ScriptRunner;
 
 public class ResultSetCurrentRowTest {
 	private static Connection connection;

@@ -1,4 +1,4 @@
-package ar.com.kamikaze.persistence.jdbc;
+package ar.com.kamikaze.persistence.jdbc.connection;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -7,6 +7,11 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import ar.com.kamikaze.persistence.jdbc.script.ScriptCommand;
+import ar.com.kamikaze.persistence.jdbc.error.ErrorHandler;
+import ar.com.kamikaze.persistence.jdbc.result.CommandResult;
+import ar.com.kamikaze.persistence.jdbc.result.CommandResultListener;
+import ar.com.kamikaze.persistence.jdbc.result.NullResultSet;
 import lombok.extern.slf4j.Slf4j;
 
 //TODO: split this class in two: 1. connection behavior and 2. command execution

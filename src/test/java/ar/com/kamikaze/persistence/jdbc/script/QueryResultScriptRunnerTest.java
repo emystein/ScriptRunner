@@ -1,4 +1,4 @@
-package ar.com.kamikaze.persistence.jdbc;
+package ar.com.kamikaze.persistence.jdbc.script;
 
 import java.io.IOException;
 import java.sql.Connection;
@@ -11,7 +11,7 @@ import org.junit.runner.RunWith;
 import org.mockito.junit.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
-public class QueryResultPrintTest extends MockLoggerTest {
+public class QueryResultScriptRunnerTest extends MockLoggerTest {
 	private Connection connection;
 	private ScriptRunner setupScriptRunner;
 
@@ -36,7 +36,7 @@ public class QueryResultPrintTest extends MockLoggerTest {
 		ScriptRunner scriptRunner = new ScriptRunner(connection, true, true);
 		scriptRunner.runScript("src/test/resources/select-posts.sql");
 
-		// ar.com.kamikaze.persistence.jdbc.ScriptRunner adds a space at the end of the statement read from the .sql file
+		// ar.com.kamikaze.persistence.jdbc.script.ScriptRunner adds a space at the end of the statement read from the .sql file
 		assertDebugMessages("SELECT post.title, author.name as author FROM post, author WHERE post.author_id = author.id ORDER BY post.title ", "TITLE\tAUTHOR", "", "author 1 post 1\temystein","author 1 post 2\temystein");
 	}
 }

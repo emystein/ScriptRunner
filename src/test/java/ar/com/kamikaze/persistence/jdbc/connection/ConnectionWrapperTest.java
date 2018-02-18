@@ -1,14 +1,16 @@
-package ar.com.kamikaze.persistence.jdbc;
+package ar.com.kamikaze.persistence.jdbc.connection;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.sql.Statement;
 import org.junit.Before;
 import org.junit.Test;
+import ar.com.kamikaze.persistence.jdbc.connection.ConnectionWrapper;
+import ar.com.kamikaze.persistence.jdbc.connection.ManualCommitConnection;
+import ar.com.kamikaze.persistence.jdbc.result.NullResultSet;
 
 public class ConnectionWrapperTest {
 	private Connection connection;

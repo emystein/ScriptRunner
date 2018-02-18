@@ -1,9 +1,7 @@
-package ar.com.kamikaze.persistence.jdbc;
+package ar.com.kamikaze.persistence.jdbc.script;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import java.io.File;
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -16,7 +14,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameter;
 import org.junit.runners.Parameterized.Parameters;
-import ar.com.kamikaze.persistence.jdbc.ScriptRunner;
+import ar.com.kamikaze.persistence.jdbc.script.ScriptRunner;
 
 @RunWith(Parameterized.class)
 public class ScriptRunnerTest {

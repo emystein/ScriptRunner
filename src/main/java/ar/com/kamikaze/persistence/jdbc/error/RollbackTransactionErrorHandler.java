@@ -1,6 +1,7 @@
-package ar.com.kamikaze.persistence.jdbc;
+package ar.com.kamikaze.persistence.jdbc.error;
 
 import java.sql.SQLException;
+import ar.com.kamikaze.persistence.jdbc.connection.ConnectionWrapper;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 

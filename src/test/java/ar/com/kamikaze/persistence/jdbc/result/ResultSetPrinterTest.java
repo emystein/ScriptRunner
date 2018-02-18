@@ -1,4 +1,4 @@
-package ar.com.kamikaze.persistence.jdbc;
+package ar.com.kamikaze.persistence.jdbc.result;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -10,10 +10,9 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
-import ch.qos.logback.classic.Level;
-import ch.qos.logback.classic.spi.LoggingEvent;
+import ar.com.kamikaze.persistence.jdbc.script.MockLoggerTest;
+import ar.com.kamikaze.persistence.jdbc.script.ScriptRunner;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ResultSetPrinterTest extends MockLoggerTest {

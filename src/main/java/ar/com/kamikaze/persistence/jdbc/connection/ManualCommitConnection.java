@@ -5,11 +5,10 @@ import java.sql.SQLException;
 
 public class ManualCommitConnection extends ConnectionWrapper {
 	public ManualCommitConnection(Connection connection) throws SQLException {
-		super(connection, false);
+		super(connection, true);
 	}
 
-	@Override
 	public void commit() throws SQLException {
-		connection.commit();
+		// do nothing, since this class is for manual commit
 	}
 }

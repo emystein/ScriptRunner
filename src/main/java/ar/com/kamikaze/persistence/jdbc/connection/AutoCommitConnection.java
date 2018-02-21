@@ -5,10 +5,11 @@ import java.sql.SQLException;
 
 public class AutoCommitConnection extends ConnectionWrapper {
 	public AutoCommitConnection(Connection connection) throws SQLException {
-		super(connection, true);
+		super(connection, false);
 	}
 
+	@Override
 	public void commit() throws SQLException {
-		// do nothing, since this is auto commit
+		connection.commit();
 	}
 }

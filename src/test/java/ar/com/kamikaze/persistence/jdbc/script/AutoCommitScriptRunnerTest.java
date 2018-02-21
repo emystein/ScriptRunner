@@ -1,5 +1,8 @@
 package ar.com.kamikaze.persistence.jdbc.script;
 
+import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.never;
+
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -26,21 +29,21 @@ public class AutoCommitScriptRunnerTest {
 	}
 
 	@Test
-	public void whenAutoCommitIsOffThenConnectionShouldExecuteCommit() throws Exception {
-		scriptRunner = createScriptRunnerWithAutoCommitSetTo(false);
-
-		scriptRunner.runScript(scriptPath);
-
-		Mockito.verify(connection, Mockito.atLeastOnce()).commit();
-	}
-
-	@Test
-	public void whenAutoCommitIsOnThenConnectionShouldNotExecuteCommit() throws Exception {
+	public void whenAutoCommitIsOnThenConnectionShouldExecuteCommit() throws Exception {
 		scriptRunner = createScriptRunnerWithAutoCommitSetTo(true);
 
 		scriptRunner.runScript(scriptPath);
 
-		Mockito.verify(connection, Mockito.never()).commit();
+		Mockito.verify(connection).commit();
+	}
+
+	@Test
+	public void whenAutoCommitIsOffThenConnectionShouldNotExecuteCommit() throws Exception {
+		scriptRunner = createScriptRunnerWithAutoCommitSetTo(false);
+
+		scriptRunner.runScript(scriptPath);
+
+		Mockito.verify(connection, never()).commit();
 	}
 
 	private ScriptRunner createScriptRunnerWithAutoCommitSetTo(boolean autoCommit) throws SQLException {

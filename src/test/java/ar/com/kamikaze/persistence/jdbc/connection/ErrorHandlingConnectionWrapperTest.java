@@ -22,7 +22,7 @@ public class ErrorHandlingConnectionWrapperTest {
 
 	@Before
 	public void setUp() throws Exception {
-		connectionWrapper = new ManualCommitConnection(connection);
+		connectionWrapper = new AutoCommitConnection(connection);
 		connectionWrapper.setErrorHandler(errorHandler);
 	}
 

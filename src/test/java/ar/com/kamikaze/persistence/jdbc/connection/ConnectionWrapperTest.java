@@ -8,8 +8,6 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import org.junit.Before;
 import org.junit.Test;
-import ar.com.kamikaze.persistence.jdbc.connection.ConnectionWrapper;
-import ar.com.kamikaze.persistence.jdbc.connection.ManualCommitConnection;
 import ar.com.kamikaze.persistence.jdbc.result.NullResultSet;
 
 public class ConnectionWrapperTest {
@@ -19,7 +17,7 @@ public class ConnectionWrapperTest {
 	@Before
 	public void setUp() throws Exception {
 		connection = DriverManager.getConnection("jdbc:h2:mem:test");
-		connectionWrapper = new ManualCommitConnection(connection);
+		connectionWrapper = new AutoCommitConnection(connection);
 
 		Statement statement = connection.createStatement();
 		statement.execute("DROP TABLE IF EXISTS author;");

@@ -1,10 +1,10 @@
 # ScriptRunner
 This is a refactoring exercise which uses https://github.com/BenoitDuffez/ScriptRunner as initial code to refactor.
 
-# Description
+## Description
 Allows to virtually use `source script.sql` with your JDBC 
 
-# Example
+## Example
 
 Here is an example of a supported script:
 
@@ -28,7 +28,7 @@ call p2("test");
 call p("this will work too");
 ```
 
-# Usage
+## Usage
 
 It is used pretty straightforwardly:
 

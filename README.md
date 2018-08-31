@@ -1,6 +1,7 @@
 # ScriptRunner
-Refactoring of https://github.com/BenoitDuffez/ScriptRunner
+This is a refactoring exercise which uses https://github.com/BenoitDuffez/ScriptRunner as initial code to refactor.
 
+# Description
 Allows to virtually use `source script.sql` with your JDBC 
 
 # Example

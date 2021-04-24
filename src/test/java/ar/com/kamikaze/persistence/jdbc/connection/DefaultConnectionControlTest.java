@@ -21,7 +21,7 @@ public class DefaultConnectionControlTest {
 	@BeforeEach
 	public void setUp() throws Exception {
 		wrappedConnection = DriverManager.getConnection("jdbc:h2:mem:test");
-		commandRunner = CommandRunnerFactory.createAutoCommitCommandRunner(wrappedConnection, new ContinueExecution());
+		commandRunner = CommandRunnerFactory.createAutoCommitCommandRunner(wrappedConnection, false);
 
 		Statement statement = wrappedConnection.createStatement();
 		statement.execute("DROP TABLE IF EXISTS post;");

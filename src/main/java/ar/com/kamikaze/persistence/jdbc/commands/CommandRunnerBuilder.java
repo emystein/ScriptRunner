@@ -40,13 +40,9 @@ public class CommandRunnerBuilder {
     }
 
     public CommandRunner build() throws SQLException {
-        ErrorHandler errorHandler = stopOnError ?
-                new Rollback(connection) :
-                new ContinueExecution();
-
         CommandRunner wrapper = autoCommit ?
-                CommandRunnerFactory.createAutoCommitCommandRunner(connection, errorHandler) :
-                CommandRunnerFactory.createManualCommitCommandRunner(connection, errorHandler);
+                CommandRunnerFactory.createAutoCommitCommandRunner(connection, stopOnError) :
+                CommandRunnerFactory.createManualCommitCommandRunner(connection, stopOnError);
 
         listeners.forEach(wrapper::addCommandResultListener);
 

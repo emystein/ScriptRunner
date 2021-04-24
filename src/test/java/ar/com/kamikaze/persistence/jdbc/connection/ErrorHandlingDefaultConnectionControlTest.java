@@ -2,6 +2,7 @@ package ar.com.kamikaze.persistence.jdbc.connection;
 
 import ar.com.kamikaze.persistence.jdbc.commands.CommandRunner;
 import ar.com.kamikaze.persistence.jdbc.commands.CommandRunnerFactory;
+import ar.com.kamikaze.persistence.jdbc.commit.AutoCommitStrategy;
 import ar.com.kamikaze.persistence.jdbc.error.ErrorHandler;
 import ar.com.kamikaze.persistence.jdbc.script.ScriptCommand;
 import org.junit.jupiter.api.BeforeEach;
@@ -25,7 +26,7 @@ public class ErrorHandlingDefaultConnectionControlTest {
 
 	@BeforeEach
 	public void setUp() throws Exception {
-		commandRunner = CommandRunnerFactory.createAutoCommitCommandRunner(wrappedConnection, errorHandler);
+		commandRunner = CommandRunnerFactory.createCommandRunner(wrappedConnection, new AutoCommitStrategy(wrappedConnection), errorHandler);
 	}
 
 	@Test

@@ -11,6 +11,11 @@ public class AutoCommitStrategy implements CommitStrategy {
     private final Connection connection;
 
     @Override
+    public boolean isManualCommit() {
+        return false;
+    }
+
+    @Override
     public void commit() throws SQLException {
         connection.commit();
     }

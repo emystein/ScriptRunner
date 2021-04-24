@@ -1,7 +1,8 @@
 package ar.com.kamikaze.persistence.jdbc.connection;
 
-import ar.com.kamikaze.persistence.jdbc.commands.AutoCommitCommandRunner;
 import ar.com.kamikaze.persistence.jdbc.commands.CommandRunner;
+import ar.com.kamikaze.persistence.jdbc.commands.CommandRunnerFactory;
+import ar.com.kamikaze.persistence.jdbc.error.ContinueExecution;
 import ar.com.kamikaze.persistence.jdbc.result.NullResultSet;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -20,7 +21,7 @@ public class DefaultConnectionControlTest {
 	@BeforeEach
 	public void setUp() throws Exception {
 		wrappedConnection = DriverManager.getConnection("jdbc:h2:mem:test");
-		commandRunner = new AutoCommitCommandRunner(wrappedConnection);
+		commandRunner = CommandRunnerFactory.createAutoCommitCommandRunner(wrappedConnection, new ContinueExecution());
 
 		Statement statement = wrappedConnection.createStatement();
 		statement.execute("DROP TABLE IF EXISTS post;");

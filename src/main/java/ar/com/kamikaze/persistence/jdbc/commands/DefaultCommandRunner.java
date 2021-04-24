@@ -17,7 +17,7 @@ import java.util.Optional;
 
 @RequiredArgsConstructor
 @Slf4j
-public class CommandExecutor implements CommandRunner {
+public class DefaultCommandRunner implements CommandRunner {
     private final ConnectionControl connection;
     private List<CommandResultListener> commandResultListeners = new ArrayList<>();
 

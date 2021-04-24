@@ -45,8 +45,8 @@ public class CommandRunnerBuilder {
                 new ContinueExecution();
 
         CommandRunner wrapper = autoCommit ?
-                new AutoCommitCommandRunner(connection, errorHandler) :
-                new ManualCommitCommandRunner(connection, errorHandler);
+                CommandRunnerFactory.createAutoCommitCommandRunner(connection, errorHandler) :
+                CommandRunnerFactory.createManualCommitCommandRunner(connection, errorHandler);
 
         listeners.forEach(wrapper::addCommandResultListener);
 

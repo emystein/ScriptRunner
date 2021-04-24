@@ -2,7 +2,7 @@ package ar.com.kamikaze.persistence.jdbc.result;
 
 import java.sql.SQLException;
 
-public class PrintCommandResultListener implements CommandResultListener {
+public class PrintResultObserver implements ResultObserver {
 	private ResultSetPrinter resultSetPrinter = new ResultSetPrinter();
 
 

@@ -2,7 +2,6 @@ package ar.com.kamikaze.persistence.jdbc.connection;
 
 import ar.com.kamikaze.persistence.jdbc.commands.CommandRunner;
 import ar.com.kamikaze.persistence.jdbc.commands.CommandRunnerFactory;
-import ar.com.kamikaze.persistence.jdbc.error.ContinueExecution;
 import ar.com.kamikaze.persistence.jdbc.result.NullResultSet;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

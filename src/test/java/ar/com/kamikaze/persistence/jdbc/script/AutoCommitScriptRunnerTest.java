@@ -8,7 +8,6 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.sql.Connection;
-import java.sql.SQLException;
 import java.sql.Statement;
 
 import static org.mockito.Mockito.never;
@@ -29,7 +28,7 @@ public class AutoCommitScriptRunnerTest {
 
 	@Test
 	public void whenAutoCommitIsOnThenConnectionShouldExecuteCommit() throws Exception {
-		scriptRunner = createScriptRunnerWithAutoCommitSetTo(true);
+		scriptRunner = ScriptRunnerBuilder.forConnection(connection).autoCommit().build();
 
 		scriptRunner.runScript(scriptPath);
 
@@ -38,20 +37,10 @@ public class AutoCommitScriptRunnerTest {
 
 	@Test
 	public void whenAutoCommitIsOffThenConnectionShouldNotExecuteCommit() throws Exception {
-		scriptRunner = createScriptRunnerWithAutoCommitSetTo(false);
+		scriptRunner = ScriptRunnerBuilder.forConnection(connection).build();
 
 		scriptRunner.runScript(scriptPath);
 
 		Mockito.verify(connection, never()).commit();
-	}
-
-	private ScriptRunner createScriptRunnerWithAutoCommitSetTo(boolean autoCommit) throws SQLException {
-		expectAutoCommitSetTo(autoCommit);
-
-		return new ScriptRunner(connection, autoCommit, false);
-	}
-
-	private void expectAutoCommitSetTo(boolean autoCommit) throws SQLException {
-		Mockito.when(connection.getAutoCommit()).thenReturn(autoCommit);
 	}
 }

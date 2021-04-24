@@ -16,7 +16,7 @@ public class QueryResultScriptRunnerTest extends MockLoggerTest {
 	@BeforeEach
 	public void setUp() throws Exception {
 		connection = DriverManager.getConnection("jdbc:h2:mem:test");
-		setupScriptRunner = new ScriptRunner(connection, true, true);
+		setupScriptRunner = ScriptRunnerBuilder.forConnection(connection).autoCommit().build();
 		setupScriptRunner.runScript("src/test/resources/schema.sql");
 		setupScriptRunner.runScript("src/test/resources/insert-posts.sql");
 		// this needs to be after executing the setup SQL in order to avoid the logger mock capturing log messages not being tested
@@ -31,10 +31,11 @@ public class QueryResultScriptRunnerTest extends MockLoggerTest {
 
 	@Test
 	public void printQueryResult() throws IOException, SQLException {
-		ScriptRunner scriptRunner = new ScriptRunner(connection, true, true);
+		ScriptRunner scriptRunner = ScriptRunnerBuilder.forConnection(connection).build();
+
 		scriptRunner.runScript("src/test/resources/select-posts.sql");
 
-		// ar.com.kamikaze.persistence.jdbc.script.ScriptRunner adds a space at the end of the statement read from the .sql file
+		// ScriptRunner adds a space at the end of the statement read from the .sql file
 		assertDebugMessages("SELECT post.title, author.name as author FROM post, author WHERE post.author_id = author.id ORDER BY post.title ", "TITLE\tAUTHOR", "", "author 1 post 1\temystein","author 1 post 2\temystein");
 	}
 }

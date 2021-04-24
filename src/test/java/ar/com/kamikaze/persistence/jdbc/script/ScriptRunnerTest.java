@@ -32,7 +32,14 @@ public class ScriptRunnerTest {
 		Connection connection = DriverManager.getConnection("jdbc:h2:mem:test");
 		connection.setAutoCommit(connectionAutoCommit);
 
-		ScriptRunner scriptRunner = new ScriptRunner(connection, runnerAutoCommit, runnerStopOnError);
+		var scriptRunnerBuilder = ScriptRunnerBuilder.forConnection(connection);
+		if (runnerAutoCommit) {
+			scriptRunnerBuilder.autoCommit();
+		}
+		if (runnerStopOnError) {
+			scriptRunnerBuilder.stopOnError();
+		}
+		ScriptRunner scriptRunner = scriptRunnerBuilder.build();
 		scriptRunner.runScript("src/test/resources/schema.sql");
 		scriptRunner.runScript("src/test/resources/insert-posts.sql");
 

@@ -11,12 +11,12 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 @ExtendWith(MockitoExtension.class)
-public class PrintCommandResultListenerTest {
+public class PrintResultObserverTest {
 	@Mock
 	private ResultSetPrinter resultSetPrinter;
 
 	@InjectMocks
-	private PrintCommandResultListener printCommandResultListener;
+	private PrintResultObserver printCommandResultListener;
 
 	@Mock
 	private ResultSet resultSet;

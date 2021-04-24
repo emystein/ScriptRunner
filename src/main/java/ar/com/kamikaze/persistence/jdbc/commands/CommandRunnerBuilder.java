@@ -1,20 +1,20 @@
 package ar.com.kamikaze.persistence.jdbc.commands;
 
-import ar.com.kamikaze.persistence.jdbc.error.ContinueExecution;
-import ar.com.kamikaze.persistence.jdbc.error.ErrorHandler;
-import ar.com.kamikaze.persistence.jdbc.error.Rollback;
-import ar.com.kamikaze.persistence.jdbc.result.CommandResultListener;
+import ar.com.kamikaze.persistence.jdbc.result.ResultObserver;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import static ar.com.kamikaze.persistence.jdbc.commands.CommandRunnerFactory.createAutoCommitCommandRunner;
+import static ar.com.kamikaze.persistence.jdbc.commands.CommandRunnerFactory.createManualCommitCommandRunner;
+
 public class CommandRunnerBuilder {
     private final Connection connection;
     private boolean autoCommit;
     private boolean stopOnError;
-    private Collection<CommandResultListener> listeners = new ArrayList<>();
+    private Collection<ResultObserver> resultObservers = new ArrayList<>();
 
     public static CommandRunnerBuilder wrap(Connection connection) {
         return new CommandRunnerBuilder(connection);
@@ -24,28 +24,28 @@ public class CommandRunnerBuilder {
         this.connection = connection;
     }
 
-    public CommandRunnerBuilder autoCommit(boolean autoCommit) {
-        this.autoCommit = autoCommit;
+    public CommandRunnerBuilder autoCommit() {
+        this.autoCommit = true;
         return this;
     }
 
-    public CommandRunnerBuilder stopOnError(boolean stopOnError) {
-        this.stopOnError = stopOnError;
+    public CommandRunnerBuilder stopOnError() {
+        this.stopOnError = true;
         return this;
     }
 
-    public CommandRunnerBuilder addCommandResultListener(CommandResultListener listener) {
-        listeners.add(listener);
+    public CommandRunnerBuilder addResultObserver(ResultObserver observer) {
+        resultObservers.add(observer);
         return this;
     }
 
     public CommandRunner build() throws SQLException {
-        CommandRunner wrapper = autoCommit ?
-                CommandRunnerFactory.createAutoCommitCommandRunner(connection, stopOnError) :
-                CommandRunnerFactory.createManualCommitCommandRunner(connection, stopOnError);
+        CommandRunner commandRunner = autoCommit ?
+                createAutoCommitCommandRunner(connection, stopOnError) :
+                createManualCommitCommandRunner(connection, stopOnError);
 
-        listeners.forEach(wrapper::addCommandResultListener);
+        resultObservers.forEach(commandRunner::addResultObserver);
 
-        return wrapper;
+        return commandRunner;
     }
 }

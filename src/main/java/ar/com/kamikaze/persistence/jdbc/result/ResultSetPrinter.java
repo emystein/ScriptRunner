@@ -1,9 +1,10 @@
 package ar.com.kamikaze.persistence.jdbc.result;
 
+import lombok.extern.slf4j.Slf4j;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
-import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class ResultSetPrinter {

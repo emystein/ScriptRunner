@@ -1,14 +1,12 @@
 package ar.com.kamikaze.persistence.jdbc.script;
 
-import ar.com.kamikaze.persistence.jdbc.commands.CommandRunnerBuilder;
 import ar.com.kamikaze.persistence.jdbc.commands.CommandRunner;
-import ar.com.kamikaze.persistence.jdbc.result.PrintCommandResultListener;
+import ar.com.kamikaze.persistence.jdbc.result.PrintResultObserver;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
-import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -16,15 +14,12 @@ import java.util.List;
  * Entry point for running SQL scripts.
  */
 public class ScriptRunner {
-	private CommandRunner commandRunner;
 	private final ScriptParser scriptParser = new ScriptParser();
+	private CommandRunner commandRunner;
 
-	public ScriptRunner(Connection connection, boolean autoCommit, boolean stopOnError) throws SQLException {
-		this.commandRunner = CommandRunnerBuilder.wrap(connection)
-				.autoCommit(autoCommit)
-				.stopOnError(stopOnError)
-				.addCommandResultListener(new PrintCommandResultListener())
-				.build();
+	public ScriptRunner(CommandRunner commandRunner) {
+	    this.commandRunner = commandRunner;
+	    this.commandRunner.addResultObserver(new PrintResultObserver());
 	}
 
 	public void setDelimiter(String delimiter, boolean fullLineDelimiter) {

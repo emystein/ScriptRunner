@@ -2,8 +2,8 @@ package ar.com.kamikaze.persistence.jdbc.commands;
 
 import ar.com.kamikaze.persistence.jdbc.connection.ConnectionControl;
 import ar.com.kamikaze.persistence.jdbc.result.CommandResult;
-import ar.com.kamikaze.persistence.jdbc.result.CommandResultListener;
 import ar.com.kamikaze.persistence.jdbc.result.NullResultSet;
+import ar.com.kamikaze.persistence.jdbc.result.ResultObserver;
 import ar.com.kamikaze.persistence.jdbc.script.ScriptCommand;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,11 +19,11 @@ import java.util.Optional;
 @Slf4j
 public class DefaultCommandRunner implements CommandRunner {
     private final ConnectionControl connection;
-    private List<CommandResultListener> commandResultListeners = new ArrayList<>();
+    private List<ResultObserver> resultObservers = new ArrayList<>();
 
     @Override
-    public void addCommandResultListener(CommandResultListener eventListener) {
-        commandResultListeners.add(eventListener);
+    public void addResultObserver(ResultObserver eventListener) {
+        resultObservers.add(eventListener);
     }
 
     @Override
@@ -69,7 +69,7 @@ public class DefaultCommandRunner implements CommandRunner {
     private void triggerCommandResultEvent(String command, ResultSet resultSet) throws SQLException {
         CommandResult commandResult = new CommandResult(command, resultSet);
 
-        for (CommandResultListener eventListener : commandResultListeners) {
+        for (ResultObserver eventListener : resultObservers) {
             eventListener.handle(commandResult);
         }
     }

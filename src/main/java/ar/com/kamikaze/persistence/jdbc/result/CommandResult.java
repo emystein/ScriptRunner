@@ -1,8 +1,9 @@
 package ar.com.kamikaze.persistence.jdbc.result;
 
-import java.sql.ResultSet;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
+
+import java.sql.ResultSet;
 
 @Data
 @RequiredArgsConstructor

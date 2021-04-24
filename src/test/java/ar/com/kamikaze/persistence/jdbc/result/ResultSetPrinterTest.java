@@ -2,6 +2,7 @@ package ar.com.kamikaze.persistence.jdbc.result;
 
 import ar.com.kamikaze.persistence.jdbc.script.MockLoggerTest;
 import ar.com.kamikaze.persistence.jdbc.script.ScriptRunner;
+import ar.com.kamikaze.persistence.jdbc.script.ScriptRunnerBuilder;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -19,7 +20,11 @@ public class ResultSetPrinterTest extends MockLoggerTest {
 	@BeforeAll
 	public static void beforeClass() throws Exception {
 		connection = DriverManager.getConnection("jdbc:h2:mem:test");
-		ScriptRunner scriptRunner = new ScriptRunner(connection, true, true);
+		ScriptRunner scriptRunner = ScriptRunnerBuilder
+				.forConnection(connection)
+				.autoCommit()
+				.stopOnError()
+				.build();
 		scriptRunner.runScript("src/test/resources/schema.sql");
 		scriptRunner.runScript("src/test/resources/insert-posts.sql");
 	}

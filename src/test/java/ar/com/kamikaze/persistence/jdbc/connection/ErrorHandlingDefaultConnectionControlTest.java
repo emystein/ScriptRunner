@@ -1,5 +1,7 @@
 package ar.com.kamikaze.persistence.jdbc.connection;
 
+import ar.com.kamikaze.persistence.jdbc.commands.AutoCommitCommandRunner;
+import ar.com.kamikaze.persistence.jdbc.commands.CommandRunner;
 import ar.com.kamikaze.persistence.jdbc.error.ErrorHandler;
 import ar.com.kamikaze.persistence.jdbc.script.ScriptCommand;
 import org.junit.jupiter.api.BeforeEach;
@@ -13,13 +15,13 @@ import java.sql.Connection;
 import java.sql.SQLException;
 
 @ExtendWith(MockitoExtension.class)
-public class ErrorHandlingCommandRunnerWrapperTest {
+public class ErrorHandlingDefaultConnectionControlTest {
 	@Mock
 	private Connection wrappedConnection;
 	@Mock
 	private ErrorHandler errorHandler;
 
-	private Commands commandRunner;
+	private CommandRunner commandRunner;
 
 	@BeforeEach
 	public void setUp() throws Exception {

@@ -1,4 +1,4 @@
-package ar.com.kamikaze.persistence.jdbc.connection;
+package ar.com.kamikaze.persistence.jdbc.commands;
 
 import ar.com.kamikaze.persistence.jdbc.result.CommandResultListener;
 import ar.com.kamikaze.persistence.jdbc.script.ScriptCommand;
@@ -7,7 +7,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
-public interface Commands {
+public interface CommandRunner {
     void addCommandResultListener(CommandResultListener eventListener);
 
     void execute(List<ScriptCommand> commands) throws SQLException;

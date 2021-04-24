@@ -1,17 +1,18 @@
 package ar.com.kamikaze.persistence.jdbc.connection;
 
+import ar.com.kamikaze.persistence.jdbc.commit.Commit;
 import ar.com.kamikaze.persistence.jdbc.error.ErrorHandler;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-public class CommandRunnerWrapper implements ConnectionControl {
-	private final ConnectionWrapper connection;
+public class DefaultConnectionControl implements ConnectionControl {
+	private final JdbcConnectionWrapper connection;
 	private final Commit commit;
 
-	protected CommandRunnerWrapper(Connection connection, boolean autoCommit, Commit commit) throws SQLException {
-		this.connection = new ConnectionWrapper(connection, autoCommit);
+	public DefaultConnectionControl(Connection connection, boolean autoCommit, Commit commit) throws SQLException {
+		this.connection = new JdbcConnectionWrapper(connection, autoCommit);
 		this.commit = commit;
 	}
 

@@ -1,4 +1,4 @@
-package ar.com.kamikaze.persistence.jdbc.connection;
+package ar.com.kamikaze.persistence.jdbc.commit;
 
 import lombok.RequiredArgsConstructor;
 

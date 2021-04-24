@@ -1,5 +1,7 @@
 package ar.com.kamikaze.persistence.jdbc.connection;
 
+import ar.com.kamikaze.persistence.jdbc.commands.AutoCommitCommandRunner;
+import ar.com.kamikaze.persistence.jdbc.commands.CommandRunner;
 import ar.com.kamikaze.persistence.jdbc.result.NullResultSet;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -11,9 +13,9 @@ import java.sql.Statement;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class CommandRunnerWrapperTest {
+public class DefaultConnectionControlTest {
 	private Connection wrappedConnection;
-	private Commands commandRunner;
+	private CommandRunner commandRunner;
 
 	@BeforeEach
 	public void setUp() throws Exception {

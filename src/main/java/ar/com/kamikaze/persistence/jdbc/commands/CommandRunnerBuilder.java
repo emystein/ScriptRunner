@@ -1,4 +1,4 @@
-package ar.com.kamikaze.persistence.jdbc.connection;
+package ar.com.kamikaze.persistence.jdbc.commands;
 
 import ar.com.kamikaze.persistence.jdbc.error.ContinueExecution;
 import ar.com.kamikaze.persistence.jdbc.error.ErrorHandler;
@@ -39,12 +39,12 @@ public class CommandRunnerBuilder {
         return this;
     }
 
-    public Commands build() throws SQLException {
+    public CommandRunner build() throws SQLException {
         ErrorHandler errorHandler = stopOnError ?
                 new Rollback(connection) :
                 new ContinueExecution();
 
-        Commands wrapper = autoCommit ?
+        CommandRunner wrapper = autoCommit ?
                 new AutoCommitCommandRunner(connection, errorHandler) :
                 new ManualCommitCommandRunner(connection, errorHandler);
 

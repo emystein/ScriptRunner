@@ -1,5 +1,6 @@
-package ar.com.kamikaze.persistence.jdbc.connection;
+package ar.com.kamikaze.persistence.jdbc.commands;
 
+import ar.com.kamikaze.persistence.jdbc.connection.ConnectionControl;
 import ar.com.kamikaze.persistence.jdbc.result.CommandResult;
 import ar.com.kamikaze.persistence.jdbc.result.CommandResultListener;
 import ar.com.kamikaze.persistence.jdbc.result.NullResultSet;
@@ -16,7 +17,7 @@ import java.util.Optional;
 
 @RequiredArgsConstructor
 @Slf4j
-public class CommandExecutor implements Commands {
+public class CommandExecutor implements CommandRunner {
     private final ConnectionControl connection;
     private List<CommandResultListener> commandResultListeners = new ArrayList<>();
 

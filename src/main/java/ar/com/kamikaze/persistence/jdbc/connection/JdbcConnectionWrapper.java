@@ -6,13 +6,13 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-public class ConnectionWrapper {
+public class JdbcConnectionWrapper {
     protected final Connection connection;
     private ErrorHandler errorHandler;
     private boolean autoCommit;
     private boolean originalAutoCommit;
 
-    protected ConnectionWrapper(Connection connection, boolean autoCommit) throws SQLException {
+    protected JdbcConnectionWrapper(Connection connection, boolean autoCommit) throws SQLException {
         this.connection = connection;
         this.autoCommit = autoCommit;
         this.originalAutoCommit = connection.getAutoCommit();

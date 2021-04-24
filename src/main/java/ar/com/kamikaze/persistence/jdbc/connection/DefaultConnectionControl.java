@@ -1,25 +1,15 @@
 package ar.com.kamikaze.persistence.jdbc.connection;
 
-import ar.com.kamikaze.persistence.jdbc.commit.Commit;
-import ar.com.kamikaze.persistence.jdbc.error.ErrorHandler;
+import ar.com.kamikaze.persistence.jdbc.commit.CommitStrategy;
+import lombok.RequiredArgsConstructor;
 
-import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+@RequiredArgsConstructor
 public class DefaultConnectionControl implements ConnectionControl {
-	private final JdbcConnectionWrapper connection;
-	private final Commit commit;
-
-	public DefaultConnectionControl(Connection connection, boolean autoCommit, Commit commit) throws SQLException {
-		this.connection = new JdbcConnectionWrapper(connection, autoCommit);
-		this.commit = commit;
-	}
-
-	@Override
-	public void setErrorHandler(ErrorHandler errorHandler) {
-		this.connection.setErrorHandler(errorHandler);
-	}
+	private final JdbcConnection connection;
+	private final CommitStrategy commitStrategy;
 
 	@Override
 	public void setUpExecution() throws SQLException {
@@ -38,7 +28,7 @@ public class DefaultConnectionControl implements ConnectionControl {
 
 	@Override
 	public void commit() throws SQLException {
-		commit.commit();
+		commitStrategy.commit();
 	}
 
 	@Override

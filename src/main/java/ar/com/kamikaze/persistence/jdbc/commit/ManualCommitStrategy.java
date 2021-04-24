@@ -2,7 +2,7 @@ package ar.com.kamikaze.persistence.jdbc.commit;
 
 import java.sql.SQLException;
 
-public class ManualCommit implements Commit {
+public class ManualCommitStrategy implements CommitStrategy {
     @Override
     public void commit() throws SQLException {
         // do nothing

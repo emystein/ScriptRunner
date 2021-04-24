@@ -7,7 +7,7 @@ import java.sql.SQLException;
 
 
 @RequiredArgsConstructor
-public class AutoCommit implements Commit {
+public class AutoCommitStrategy implements CommitStrategy {
     private final Connection connection;
 
     @Override

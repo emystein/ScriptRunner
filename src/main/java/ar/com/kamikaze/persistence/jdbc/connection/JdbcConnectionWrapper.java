@@ -6,48 +6,47 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-public class JdbcConnectionWrapper {
-    protected final Connection connection;
-    private ErrorHandler errorHandler;
+public class JdbcConnectionWrapper implements JdbcConnection {
+    private final Connection connection;
     private boolean autoCommit;
     private boolean originalAutoCommit;
+    private ErrorHandler errorHandler;
 
-    protected JdbcConnectionWrapper(Connection connection, boolean autoCommit) throws SQLException {
+    public JdbcConnectionWrapper(Connection connection, boolean autoCommit, ErrorHandler errorHandler) throws SQLException {
         this.connection = connection;
         this.autoCommit = autoCommit;
         this.originalAutoCommit = connection.getAutoCommit();
-    }
-
-    public void setErrorHandler(ErrorHandler errorHandler) {
         this.errorHandler = errorHandler;
     }
 
+    @Override
     public void setUpExecution() throws SQLException {
-        setAutoCommit(autoCommit);
+        connection.setAutoCommit(autoCommit);
     }
 
+    @Override
     public void endExecution() throws SQLException {
-        setAutoCommit(originalAutoCommit);
+        connection.setAutoCommit(originalAutoCommit);
     }
 
+    @Override
     public Statement createStatement() throws SQLException {
         return connection.createStatement();
     }
 
+    @Override
     public void commit() throws SQLException {
         connection.commit();
     }
 
+    @Override
     public void handleError(SQLException exception) throws SQLException {
         errorHandler.handle(exception);
     }
 
+    @Override
     public void rollback() throws SQLException {
         connection.rollback();
-        setAutoCommit(originalAutoCommit);
-    }
-
-    private void setAutoCommit(boolean autoCommit) throws SQLException {
-        connection.setAutoCommit(autoCommit);
+        endExecution();
     }
 }

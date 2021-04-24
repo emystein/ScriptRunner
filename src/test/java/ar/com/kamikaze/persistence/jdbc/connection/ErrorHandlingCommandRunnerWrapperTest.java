@@ -13,27 +13,27 @@ import ar.com.kamikaze.persistence.jdbc.error.ErrorHandler;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-public class ErrorHandlingConnectionWrapperTest {
+public class ErrorHandlingCommandRunnerWrapperTest {
 	@Mock
-	private Connection connection;
+	private Connection wrappedConnection;
 	@Mock
 	private ErrorHandler errorHandler;
 
-	private ConnectionWrapper connectionWrapper;
+	private CommandRunner commandRunner;
 
 	@BeforeEach
 	public void setUp() throws Exception {
-		connectionWrapper = new AutoCommitConnection(connection);
-		connectionWrapper.setErrorHandler(errorHandler);
+		commandRunner = new AutoCommitCommandRunner(wrappedConnection);
+		commandRunner.setErrorHandler(errorHandler);
 	}
 
 	@Test
 	public void whenACommandFailsThenErrorHandlerShouldExecute() throws SQLException {
 		SQLException sqlException = new SQLException();
 
-		Mockito.when(connection.createStatement()).thenThrow(sqlException);
+		Mockito.when(wrappedConnection.createStatement()).thenThrow(sqlException);
 
-		connectionWrapper.execute(new ScriptCommand(1, "failure"));
+		commandRunner.execute(new ScriptCommand(1, "failure"));
 
 		Mockito.verify(errorHandler).handle(sqlException);
 	}

@@ -1,19 +1,19 @@
 package ar.com.kamikaze.persistence.jdbc.error;
 
 import java.sql.SQLException;
-import ar.com.kamikaze.persistence.jdbc.connection.ConnectionWrapper;
+
+import ar.com.kamikaze.persistence.jdbc.connection.CommandRunner;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @Getter
 public class RollbackTransactionErrorHandler implements ErrorHandler {
-	private final ConnectionWrapper connection;
+	private final CommandRunner commandRunner;
 
 	@Override
 	public void handle(SQLException exception) throws SQLException {
-		connection.rollback();
-		connection.rollbackAutoCommit();
+		commandRunner.rollback();
 		throw exception;
 	}
 }

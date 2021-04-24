@@ -10,16 +10,16 @@ import ar.com.kamikaze.persistence.jdbc.result.NullResultSet;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-public class ConnectionWrapperTest {
-	private Connection connection;
-	private ConnectionWrapper connectionWrapper;
+public class CommandRunnerWrapperTest {
+	private Connection wrappedConnection;
+	private CommandRunner commandRunner;
 
 	@BeforeEach
 	public void setUp() throws Exception {
-		connection = DriverManager.getConnection("jdbc:h2:mem:test");
-		connectionWrapper = new AutoCommitConnection(connection);
+		wrappedConnection = DriverManager.getConnection("jdbc:h2:mem:test");
+		commandRunner = new AutoCommitCommandRunner(wrappedConnection);
 
-		Statement statement = connection.createStatement();
+		Statement statement = wrappedConnection.createStatement();
 		statement.execute("DROP TABLE IF EXISTS post;");
 		statement.execute("DROP TABLE IF EXISTS author;");
 		statement.execute("CREATE TABLE author(id INTEGER, name TEXT, PRIMARY KEY (id));");
@@ -28,7 +28,7 @@ public class ConnectionWrapperTest {
 
 	@Test
 	public void executingQueryOnExistingDataShouldReturnResultSet() throws Exception {
-		ResultSet resultSet = connectionWrapper.execute("SELECT * FROM author");
+		ResultSet resultSet = commandRunner.execute("SELECT * FROM author");
 
 		resultSet.next();
 		assertThat(resultSet.getInt("id")).isEqualTo(1);
@@ -37,7 +37,7 @@ public class ConnectionWrapperTest {
 
 	@Test
 	public void executingInsertShouldReturnEmptyResultSet() throws Exception {
-		ResultSet resultSet = connectionWrapper.execute("INSERT INTO author(id, name) VALUES(2, 'fbaron');");
+		ResultSet resultSet = commandRunner.execute("INSERT INTO author(id, name) VALUES(2, 'fbaron');");
 
 		assertThat(resultSet).isInstanceOf(NullResultSet.class);
 	}

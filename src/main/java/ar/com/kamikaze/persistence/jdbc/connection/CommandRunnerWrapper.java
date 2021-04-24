@@ -16,39 +16,32 @@ import lombok.extern.slf4j.Slf4j;
 
 //TODO: split this class in two: 1. connection behavior and 2. command execution
 @Slf4j
-public abstract class ConnectionWrapper {
+public abstract class CommandRunnerWrapper implements CommandRunner {
 	protected final Connection connection;
 	private ErrorHandler errorHandler;
 	private boolean autoCommit;
 	private boolean originalAutoCommit;
 	private List<CommandResultListener> commandResultListeners = new ArrayList<>();
 
-	protected ConnectionWrapper(Connection connection, boolean autoCommit) throws SQLException {
+	protected CommandRunnerWrapper(Connection connection, boolean autoCommit) throws SQLException {
 		this.connection = connection;
 		this.autoCommit = autoCommit;
 		this.originalAutoCommit = connection.getAutoCommit();
 	}
 
+	@Override
 	public void setErrorHandler(ErrorHandler errorHandler) {
 		this.errorHandler = errorHandler;
 	}
 
+	@Override
 	public void addCommandResultListener(CommandResultListener eventListener) {
 		commandResultListeners.add(eventListener);
 	}
 
-	public abstract void commit() throws SQLException;
-
-	public void rollback() throws SQLException {
-		connection.rollback();
-	}
-
-	public void rollbackAutoCommit() throws SQLException {
-		setAutoCommit(originalAutoCommit);
-	}
-
 	// TODO: review how to implement pattern: setAutoCommit(autoCommit) -> execute commands -> setAutoCommit(originalAutoCommit)
-	public void run(List<ScriptCommand> commands) throws SQLException {
+	@Override
+	public void execute(List<ScriptCommand> commands) throws SQLException {
 		setAutoCommit(autoCommit);
 
 		for (ScriptCommand command : commands) {
@@ -60,10 +53,12 @@ public abstract class ConnectionWrapper {
 		setAutoCommit(originalAutoCommit);
 	}
 
+	@Override
 	public ResultSet execute(ScriptCommand command) throws SQLException {
 		return execute(command.getCommand());
 	}
 
+	@Override
 	public ResultSet execute(String command) throws SQLException {
 		log.debug(command);
 
@@ -83,6 +78,12 @@ public abstract class ConnectionWrapper {
 		triggerCommandResultEvent(command, resultSet);
 
 		return resultSet;
+	}
+
+	@Override
+	public void rollback() throws SQLException {
+		connection.rollback();
+		setAutoCommit(originalAutoCommit);
 	}
 
 	private void triggerCommandResultEvent(String command, ResultSet resultSet) throws SQLException {

@@ -3,8 +3,8 @@ package ar.com.kamikaze.persistence.jdbc.connection;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-public class ManualCommitConnection extends ConnectionWrapper {
-	public ManualCommitConnection(Connection connection) throws SQLException {
+public class ManualCommitCommandRunner extends CommandRunnerWrapper {
+	public ManualCommitCommandRunner(Connection connection) throws SQLException {
 		super(connection, true);
 	}
 

@@ -1,7 +1,7 @@
 package ar.com.kamikaze.persistence.jdbc.script;
 
-import ar.com.kamikaze.persistence.jdbc.connection.CommandRunner;
 import ar.com.kamikaze.persistence.jdbc.connection.CommandRunnerBuilder;
+import ar.com.kamikaze.persistence.jdbc.connection.Commands;
 import ar.com.kamikaze.persistence.jdbc.result.PrintCommandResultListener;
 
 import java.io.BufferedReader;
@@ -16,7 +16,7 @@ import java.util.List;
  * Entry point for running SQL scripts.
  */
 public class ScriptRunner {
-	private CommandRunner commandRunner;
+	private Commands commandRunner;
 	private final ScriptParser scriptParser = new ScriptParser();
 
 	public ScriptRunner(Connection connection, boolean autoCommit, boolean stopOnError) throws SQLException {

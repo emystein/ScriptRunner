@@ -1,8 +1,8 @@
 package ar.com.kamikaze.persistence.jdbc.connection;
 
-import ar.com.kamikaze.persistence.jdbc.error.ContinueExecutionErrorHandler;
+import ar.com.kamikaze.persistence.jdbc.error.ContinueExecution;
 import ar.com.kamikaze.persistence.jdbc.error.ErrorHandler;
-import ar.com.kamikaze.persistence.jdbc.error.RollbackTransactionErrorHandler;
+import ar.com.kamikaze.persistence.jdbc.error.Rollback;
 import ar.com.kamikaze.persistence.jdbc.result.CommandResultListener;
 
 import java.sql.Connection;
@@ -39,20 +39,16 @@ public class CommandRunnerBuilder {
         return this;
     }
 
-    public CommandRunner build() throws SQLException {
-        var wrapper = autoCommit ?
-                new AutoCommitCommandRunner(connection) :
-                new ManualCommitCommandRunner(connection);
-
+    public Commands build() throws SQLException {
         ErrorHandler errorHandler = stopOnError ?
-                new RollbackTransactionErrorHandler(wrapper) :
-                new ContinueExecutionErrorHandler();
+                new Rollback(connection) :
+                new ContinueExecution();
 
-        wrapper.setErrorHandler(errorHandler);
+        Commands wrapper = autoCommit ?
+                new AutoCommitCommandRunner(connection, errorHandler) :
+                new ManualCommitCommandRunner(connection, errorHandler);
 
-        for (CommandResultListener listener : listeners) {
-            wrapper.addCommandResultListener(listener);
-        }
+        listeners.forEach(wrapper::addCommandResultListener);
 
         return wrapper;
     }

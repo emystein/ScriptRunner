@@ -1,16 +1,16 @@
 package ar.com.kamikaze.persistence.jdbc.connection;
 
-import java.sql.Connection;
-import java.sql.SQLException;
-
+import ar.com.kamikaze.persistence.jdbc.error.ErrorHandler;
+import ar.com.kamikaze.persistence.jdbc.script.ScriptCommand;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import ar.com.kamikaze.persistence.jdbc.script.ScriptCommand;
-import ar.com.kamikaze.persistence.jdbc.error.ErrorHandler;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import java.sql.Connection;
+import java.sql.SQLException;
 
 @ExtendWith(MockitoExtension.class)
 public class ErrorHandlingCommandRunnerWrapperTest {
@@ -19,12 +19,11 @@ public class ErrorHandlingCommandRunnerWrapperTest {
 	@Mock
 	private ErrorHandler errorHandler;
 
-	private CommandRunner commandRunner;
+	private Commands commandRunner;
 
 	@BeforeEach
 	public void setUp() throws Exception {
-		commandRunner = new AutoCommitCommandRunner(wrappedConnection);
-		commandRunner.setErrorHandler(errorHandler);
+		commandRunner = new AutoCommitCommandRunner(wrappedConnection, errorHandler);
 	}
 
 	@Test

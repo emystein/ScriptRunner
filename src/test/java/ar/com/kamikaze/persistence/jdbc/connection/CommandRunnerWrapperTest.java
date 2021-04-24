@@ -1,18 +1,19 @@
 package ar.com.kamikaze.persistence.jdbc.connection;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import ar.com.kamikaze.persistence.jdbc.result.NullResultSet;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
-import ar.com.kamikaze.persistence.jdbc.result.NullResultSet;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class CommandRunnerWrapperTest {
 	private Connection wrappedConnection;
-	private CommandRunner commandRunner;
+	private Commands commandRunner;
 
 	@BeforeEach
 	public void setUp() throws Exception {

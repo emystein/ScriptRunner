@@ -6,20 +6,21 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
-import org.junit.Before;
-import org.junit.Test;
 import ar.com.kamikaze.persistence.jdbc.result.NullResultSet;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 public class ConnectionWrapperTest {
 	private Connection connection;
 	private ConnectionWrapper connectionWrapper;
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		connection = DriverManager.getConnection("jdbc:h2:mem:test");
 		connectionWrapper = new AutoCommitConnection(connection);
 
 		Statement statement = connection.createStatement();
+		statement.execute("DROP TABLE IF EXISTS post;");
 		statement.execute("DROP TABLE IF EXISTS author;");
 		statement.execute("CREATE TABLE author(id INTEGER, name TEXT, PRIMARY KEY (id));");
 		statement.execute("INSERT INTO author(id, name) VALUES(1, 'emenendez');");
@@ -40,5 +41,4 @@ public class ConnectionWrapperTest {
 
 		assertThat(resultSet).isInstanceOf(NullResultSet.class);
 	}
-
 }

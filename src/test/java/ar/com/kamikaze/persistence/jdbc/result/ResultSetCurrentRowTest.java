@@ -1,20 +1,17 @@
 package ar.com.kamikaze.persistence.jdbc.result;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.List;
-import org.assertj.core.api.Assertions;
-import org.junit.BeforeClass;
-import org.junit.Test;
 import ar.com.kamikaze.persistence.jdbc.script.ScriptRunner;
+import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
+
+import java.sql.*;
+import java.util.List;
 
 public class ResultSetCurrentRowTest {
 	private static Connection connection;
 
-	@BeforeClass
+	@BeforeAll
 	public static void beforeClass() throws Exception {
 		connection = DriverManager.getConnection("jdbc:h2:mem:test");
 		ScriptRunner scriptRunner = new ScriptRunner(connection, true, true);

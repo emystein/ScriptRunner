@@ -1,26 +1,22 @@
 package ar.com.kamikaze.persistence.jdbc.result;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import ar.com.kamikaze.persistence.jdbc.script.MockLoggerTest;
+import ar.com.kamikaze.persistence.jdbc.script.ScriptRunner;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.junit.MockitoJUnitRunner;
-import ar.com.kamikaze.persistence.jdbc.script.MockLoggerTest;
-import ar.com.kamikaze.persistence.jdbc.script.ScriptRunner;
 
-@RunWith(MockitoJUnitRunner.class)
 public class ResultSetPrinterTest extends MockLoggerTest {
 	private ResultSetPrinter resultSetPrinter;
 
 	private static Connection connection;
 
-	@BeforeClass
+	@BeforeAll
 	public static void beforeClass() throws Exception {
 		connection = DriverManager.getConnection("jdbc:h2:mem:test");
 		ScriptRunner scriptRunner = new ScriptRunner(connection, true, true);
@@ -28,7 +24,7 @@ public class ResultSetPrinterTest extends MockLoggerTest {
 		scriptRunner.runScript("src/test/resources/insert-posts.sql");
 	}
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		super.setUp();
 		resultSetPrinter = new ResultSetPrinter();

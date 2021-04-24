@@ -1,20 +1,19 @@
 package ar.com.kamikaze.persistence.jdbc.script;
 
-import static org.mockito.Mockito.atLeastOnce;
-import static org.mockito.Mockito.never;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.junit.MockitoJUnitRunner;
-import ar.com.kamikaze.persistence.jdbc.script.ScriptRunner;
 
-@RunWith(MockitoJUnitRunner.class)
+import static org.mockito.Mockito.never;
+
+@ExtendWith(MockitoExtension.class)
 public class AutoCommitScriptRunnerTest {
 	private ScriptRunner scriptRunner;
 	@Mock
@@ -23,7 +22,7 @@ public class AutoCommitScriptRunnerTest {
 	private Statement statement;
 	private String scriptPath = "src/test/resources/schema.sql";
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		Mockito.when(connection.createStatement()).thenReturn(statement);
 	}

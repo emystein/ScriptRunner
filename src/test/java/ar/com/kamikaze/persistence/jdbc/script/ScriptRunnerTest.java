@@ -1,6 +1,7 @@
 package ar.com.kamikaze.persistence.jdbc.script;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -8,20 +9,11 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.Arrays;
 import java.util.Collection;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.junit.runners.Parameterized;
-import org.junit.runners.Parameterized.Parameter;
-import org.junit.runners.Parameterized.Parameters;
-import ar.com.kamikaze.persistence.jdbc.script.ScriptRunner;
 
-@RunWith(Parameterized.class)
+import static org.assertj.core.api.Assertions.assertThat;
+
 public class ScriptRunnerTest {
-	private Connection connection;
-
-	@Parameters
-	public static Collection<Object[]> data() {
+	public static Collection<Object[]> runScriptDataProvider() {
 		return Arrays.asList(new Object[][] {
 				{ false, false, false},
 				{ false, false, true },
@@ -34,21 +26,12 @@ public class ScriptRunnerTest {
 		});
 	}
 
-	@Parameter
-	public boolean connectionAutoCommit;
-	@Parameter(1)
-	public boolean runnerAutoCommit;
-	@Parameter(2)
-	public boolean runnerStopOnError;
-
-	@Before
-	public void setUp() throws Exception {
-		connection = DriverManager.getConnection("jdbc:h2:mem:test");
+	@ParameterizedTest
+	@MethodSource("runScriptDataProvider")
+	public void runScript(boolean connectionAutoCommit, boolean runnerAutoCommit, boolean runnerStopOnError) throws Exception {
+		Connection connection = DriverManager.getConnection("jdbc:h2:mem:test");
 		connection.setAutoCommit(connectionAutoCommit);
-	}
 
-	@Test
-	public void runScript() throws Exception {
 		ScriptRunner scriptRunner = new ScriptRunner(connection, runnerAutoCommit, runnerStopOnError);
 		scriptRunner.runScript("src/test/resources/schema.sql");
 		scriptRunner.runScript("src/test/resources/insert-posts.sql");

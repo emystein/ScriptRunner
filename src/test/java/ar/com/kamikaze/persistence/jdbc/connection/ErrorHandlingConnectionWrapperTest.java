@@ -2,16 +2,17 @@ package ar.com.kamikaze.persistence.jdbc.connection;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.junit.MockitoJUnitRunner;
 import ar.com.kamikaze.persistence.jdbc.script.ScriptCommand;
 import ar.com.kamikaze.persistence.jdbc.error.ErrorHandler;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class ErrorHandlingConnectionWrapperTest {
 	@Mock
 	private Connection connection;
@@ -20,7 +21,7 @@ public class ErrorHandlingConnectionWrapperTest {
 
 	private ConnectionWrapper connectionWrapper;
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		connectionWrapper = new AutoCommitConnection(connection);
 		connectionWrapper.setErrorHandler(errorHandler);

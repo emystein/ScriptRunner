@@ -1,21 +1,19 @@
 package ar.com.kamikaze.persistence.jdbc.script;
 
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.junit.MockitoJUnitRunner;
 
-@RunWith(MockitoJUnitRunner.class)
 public class QueryResultScriptRunnerTest extends MockLoggerTest {
 	private Connection connection;
 	private ScriptRunner setupScriptRunner;
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		connection = DriverManager.getConnection("jdbc:h2:mem:test");
 		setupScriptRunner = new ScriptRunner(connection, true, true);
@@ -25,7 +23,7 @@ public class QueryResultScriptRunnerTest extends MockLoggerTest {
 		super.setUp();
 	}
 
-	@After
+	@AfterEach
 	public void tearDown() throws Exception {
 		super.tearDown();
 		setupScriptRunner.runScript("src/test/resources/drop-schema.sql");

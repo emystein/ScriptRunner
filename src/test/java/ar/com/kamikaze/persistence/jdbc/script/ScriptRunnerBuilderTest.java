@@ -1,21 +1,21 @@
 package ar.com.kamikaze.persistence.jdbc.script;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.atLeastOnce;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.junit.MockitoJUnitRunner;
 
-@RunWith(MockitoJUnitRunner.class)
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.never;
+
+@ExtendWith(MockitoExtension.class)
 public class ScriptRunnerBuilderTest {
 	@Mock
 	private Connection connection;
@@ -23,17 +23,10 @@ public class ScriptRunnerBuilderTest {
 	private Statement statement;
 	private String scriptPath = "src/test/resources/schema.sql";
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		Mockito.when(connection.getAutoCommit()).thenReturn(false);
 		Mockito.when(connection.createStatement()).thenReturn(statement);
-	}
-
-	@Test
-	public void createScriptRunnerWithDefaults() throws SQLException {
-		ScriptRunner scriptRunner = ScriptRunnerBuilder.forConnection(connection).build();
-
-		assertThat(scriptRunner).isNotNull();
 	}
 
 	@Test
@@ -54,13 +47,13 @@ public class ScriptRunnerBuilderTest {
 		Mockito.verify(connection).commit();
 	}
 
-	@Test(expected = SQLException.class)
+	@Test
 	public void givenCreatedScriptRunnerWithStopOnErrorWhenRunningScriptThenScriptRunnerShouldThrowException() throws Exception {
 		expectScriptStatementThrowException();
 
 		ScriptRunner scriptRunner = ScriptRunnerBuilder.forConnection(connection).stopOnError().build();
 
-		scriptRunner.runScript(scriptPath);
+		assertThrows(SQLException.class, () -> scriptRunner.runScript(scriptPath));
 	}
 
 	@Test

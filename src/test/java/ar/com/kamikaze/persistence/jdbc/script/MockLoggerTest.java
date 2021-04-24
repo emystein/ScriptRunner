@@ -1,33 +1,36 @@
 package ar.com.kamikaze.persistence.jdbc.script;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
-import org.junit.After;
-import org.junit.Before;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
-import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.slf4j.LoggerFactory;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.spi.LoggingEvent;
 import ch.qos.logback.core.Appender;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.slf4j.LoggerFactory;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
+@ExtendWith(MockitoExtension.class)
 public class MockLoggerTest {
 	@Mock
 	protected Appender mockAppender;
 	@Captor
 	protected ArgumentCaptor<LoggingEvent> captorLoggingEvent;
 
-	@Before
+	@BeforeEach
 	public void setUp() throws Exception {
 		Logger root = (Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
 		root.addAppender(mockAppender);
 		root.setLevel(Level.DEBUG);
 	}
 
-	@After
+	@AfterEach
 	public void tearDown() throws Exception {
 		final Logger logger = (Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
 		logger.detachAppender(mockAppender);

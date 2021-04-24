@@ -5,14 +5,14 @@ import static org.mockito.Mockito.when;
 
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
-import ar.com.kamikaze.persistence.jdbc.result.CollectedResultSetMetaData;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-@RunWith(MockitoJUnitRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class CollectedResultSetMetaDataTest {
 	@Mock
 	private ResultSetMetaData resultSetMetaData;

@@ -22,7 +22,7 @@ public class DefaultConnectionControlTest {
 	@BeforeEach
 	public void setUp() throws Exception {
 		connection = DriverManager.getConnection("jdbc:h2:mem:test");
-		commandRunner = createCommandRunner(connection, new AutoCommitStrategy(connection), false);
+		commandRunner = createCommandRunner(connection, new AutoCommitStrategy(), false);
 
 		Statement statement = connection.createStatement();
 		statement.execute("DROP TABLE IF EXISTS post;");

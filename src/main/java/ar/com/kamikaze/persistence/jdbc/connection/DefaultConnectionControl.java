@@ -28,7 +28,7 @@ public class DefaultConnectionControl implements ConnectionControl {
 
 	@Override
 	public void commit() throws SQLException {
-		commitStrategy.commit();
+		commitStrategy.commit(connection);
 	}
 
 	@Override

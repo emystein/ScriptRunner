@@ -25,7 +25,7 @@ public class CommandRunnerFactory {
         return new DefaultCommandRunner(connectionControl);
     }
 
-    private static ErrorHandler errorHandler(Connection connection, boolean stopOnError) {
+    public static ErrorHandler errorHandler(Connection connection, boolean stopOnError) {
         return stopOnError ? new Rollback(connection) : new ContinueExecution();
     }
 }

@@ -27,7 +27,7 @@ public class ErrorHandlingDefaultConnectionControlTest {
 
 	@BeforeEach
 	public void setUp() throws Exception {
-		commandRunner = createCommandRunner(connection, new AutoCommitStrategy(connection), errorHandler);
+		commandRunner = createCommandRunner(connection, new AutoCommitStrategy(), errorHandler);
 	}
 
 	@Test

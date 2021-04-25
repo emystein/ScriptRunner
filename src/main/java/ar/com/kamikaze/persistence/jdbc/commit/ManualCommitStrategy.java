@@ -1,7 +1,6 @@
 package ar.com.kamikaze.persistence.jdbc.commit;
 
-import ar.com.kamikaze.persistence.jdbc.connection.JdbcConnection;
-
+import java.sql.Connection;
 import java.sql.SQLException;
 
 public class ManualCommitStrategy implements CommitStrategy {
@@ -11,7 +10,7 @@ public class ManualCommitStrategy implements CommitStrategy {
     }
 
     @Override
-    public void commit(JdbcConnection connection) throws SQLException {
+    public void commit(Connection connection) throws SQLException {
         // do nothing
     }
 }

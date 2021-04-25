@@ -1,5 +1,6 @@
 package ar.com.kamikaze.persistence.jdbc.connection;
 
+import ar.com.kamikaze.persistence.jdbc.commit.CommitStrategy;
 import ar.com.kamikaze.persistence.jdbc.error.ErrorHandler;
 
 import java.sql.Connection;
@@ -35,8 +36,8 @@ public class JdbcConnectionWrapper implements JdbcConnection {
     }
 
     @Override
-    public void commit() throws SQLException {
-        connection.commit();
+    public void commit(CommitStrategy commitStrategy) throws SQLException {
+        commitStrategy.commit(this.connection);
     }
 
     @Override

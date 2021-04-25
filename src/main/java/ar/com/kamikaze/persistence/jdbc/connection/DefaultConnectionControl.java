@@ -8,7 +8,7 @@ import java.sql.Statement;
 
 @RequiredArgsConstructor
 public class DefaultConnectionControl implements ConnectionControl {
-	private final JdbcConnection connection;
+	private final Connection connection;
 	private final CommitStrategy commitStrategy;
 
 	@Override

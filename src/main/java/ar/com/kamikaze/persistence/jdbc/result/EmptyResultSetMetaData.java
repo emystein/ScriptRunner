@@ -4,7 +4,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class NullResultSetMetaData implements ResultSetMetaData {
+public class EmptyResultSetMetaData implements ResultSetMetaData {
 	@Override
 	public int getColumnCount() throws SQLException {
 		return 0;

@@ -3,17 +3,16 @@ package ar.com.kamikaze.persistence.jdbc.connection;
 import ar.com.kamikaze.persistence.jdbc.commit.CommitStrategy;
 import ar.com.kamikaze.persistence.jdbc.error.ErrorHandler;
 
-import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-public class JdbcConnectionWrapper implements JdbcConnection {
-    private final Connection connection;
+public class DefaultConnection implements Connection {
+    private final java.sql.Connection connection;
     private boolean autoCommit;
     private boolean originalAutoCommit;
     private ErrorHandler errorHandler;
 
-    public JdbcConnectionWrapper(Connection connection, boolean autoCommit, ErrorHandler errorHandler) throws SQLException {
+    public DefaultConnection(java.sql.Connection connection, boolean autoCommit, ErrorHandler errorHandler) throws SQLException {
         this.connection = connection;
         this.autoCommit = autoCommit;
         this.originalAutoCommit = connection.getAutoCommit();

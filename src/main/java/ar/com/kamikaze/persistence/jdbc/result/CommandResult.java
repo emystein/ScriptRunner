@@ -11,6 +11,6 @@ public class CommandResult {
 
 	public CommandResult(String command, java.sql.ResultSet wrappedResultSet) {
 		this.command = command;
-		this.resultSet = new ResultSetWrapper(wrappedResultSet);
+		this.resultSet = new DefaultResultSet(wrappedResultSet);
 	}
 }

@@ -14,7 +14,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.util.Lists.list;
 
 @ExtendWith(MockitoExtension.class)
-public class ResultSetWrapperTest {
+public class DefaultResultSetTest {
     private static Connection connection;
 
     @BeforeAll
@@ -41,7 +41,7 @@ public class ResultSetWrapperTest {
 
     @Test
     public void getNullResults() throws SQLException {
-        var resultSet = new NullResultSet();
+        var resultSet = new EmptyResultSet();
 
         assertThat(resultSet.nextRow().getValues()).isEqualTo(list());
     }
@@ -53,8 +53,8 @@ public class ResultSetWrapperTest {
         assertThat(resultSet.getMetaData().getColumnLabels()).isEqualTo(list("ID", "TITLE", "AUTHOR_ID"));
     }
 
-    private ResultSetWrapper wrapResults(String aQuery) throws SQLException {
-        return new ResultSetWrapper(query(aQuery));
+    private DefaultResultSet wrapResults(String aQuery) throws SQLException {
+        return new DefaultResultSet(query(aQuery));
     }
 
     private java.sql.ResultSet query(String query) throws SQLException {

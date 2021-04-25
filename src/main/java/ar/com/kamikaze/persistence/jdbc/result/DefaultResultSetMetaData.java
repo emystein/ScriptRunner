@@ -4,10 +4,10 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ResultSetMetaDataWrapper implements ResultSetMetaData {
+public class DefaultResultSetMetaData implements ResultSetMetaData {
 	private java.sql.ResultSetMetaData wrappedMetadata;
 
-	public ResultSetMetaDataWrapper(java.sql.ResultSetMetaData resultSetMetaData) {
+	public DefaultResultSetMetaData(java.sql.ResultSetMetaData resultSetMetaData) {
 		wrappedMetadata = resultSetMetaData;
 	}
 

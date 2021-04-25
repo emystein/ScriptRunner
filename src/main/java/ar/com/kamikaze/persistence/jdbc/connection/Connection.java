@@ -5,7 +5,7 @@ import ar.com.kamikaze.persistence.jdbc.commit.CommitStrategy;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-public interface JdbcConnection {
+public interface Connection {
     void setUpExecution() throws SQLException;
 
     void endExecution() throws SQLException;

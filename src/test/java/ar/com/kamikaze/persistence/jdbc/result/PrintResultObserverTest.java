@@ -18,7 +18,7 @@ public class PrintResultObserverTest {
 	private PrintResultObserver observer;
 
 	@Mock
-	private ResultSetWrapper resultSet;
+	private DefaultResultSet resultSet;
 
 	@Test
 	public void handle() throws SQLException {

@@ -2,7 +2,7 @@ package ar.com.kamikaze.persistence.jdbc.connection;
 
 import ar.com.kamikaze.persistence.jdbc.commands.CommandRunner;
 import ar.com.kamikaze.persistence.jdbc.commit.AutoCommitStrategy;
-import ar.com.kamikaze.persistence.jdbc.result.NullResultSet;
+import ar.com.kamikaze.persistence.jdbc.result.EmptyResultSet;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -42,6 +42,6 @@ public class DefaultConnectionControlTest {
 	public void executingInsertShouldReturnEmptyResultSet() throws Exception {
 		var resultSet = commandRunner.execute("INSERT INTO author(id, name) VALUES(2, 'fbaron');");
 
-		assertThat(resultSet).isInstanceOf(NullResultSet.class);
+		assertThat(resultSet).isInstanceOf(EmptyResultSet.class);
 	}
 }

@@ -2,10 +2,10 @@ package ar.com.kamikaze.persistence.jdbc.result;
 
 import java.sql.SQLException;
 
-public class NullResultSet implements ResultSet {
+public class EmptyResultSet implements ResultSet {
 	@Override
 	public ResultSetMetaData getMetaData() throws SQLException {
-		return new NullResultSetMetaData();
+		return new EmptyResultSetMetaData();
 	}
 
 	@Override

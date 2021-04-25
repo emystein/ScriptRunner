@@ -44,14 +44,14 @@ public class DefaultCommandRunner implements CommandRunner {
     public ResultSet execute(String command) throws SQLException {
         log.debug(command);
 
-        ResultSet resultSet = new NullResultSet();
+        ResultSet resultSet = new EmptyResultSet();
 
         try {
             Statement statement = connection.createStatement();
 
             statement.execute(command);
 
-            resultSet = statement.getResultSet() == null ? new NullResultSet() : new ResultSetWrapper(statement.getResultSet());
+            resultSet = statement.getResultSet() == null ? new EmptyResultSet() : new DefaultResultSet(statement.getResultSet());
 
             triggerCommandResultEvent(command, resultSet);
         } catch (SQLException e) {

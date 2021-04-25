@@ -2,15 +2,15 @@ package ar.com.kamikaze.persistence.jdbc.result;
 
 import java.sql.SQLException;
 
-public class ResultSetWrapper implements ResultSet {
+public class DefaultResultSet implements ResultSet {
     private final java.sql.ResultSet wrappedResultSet;
 
-    public ResultSetWrapper(java.sql.ResultSet wrappedResultSet) {
+    public DefaultResultSet(java.sql.ResultSet wrappedResultSet) {
         this.wrappedResultSet = wrappedResultSet;
     }
 
     public ResultSetMetaData getMetaData() throws SQLException {
-        return new ResultSetMetaDataWrapper(wrappedResultSet.getMetaData());
+        return new DefaultResultSetMetaData(wrappedResultSet.getMetaData());
     }
 
     public boolean hasNext() throws SQLException {
@@ -18,7 +18,7 @@ public class ResultSetWrapper implements ResultSet {
     }
 
     public ResultSetCurrentRow nextRow() throws SQLException {
-        var resultSet = hasNext() ? this : new NullResultSet();
+        var resultSet = hasNext() ? this : new EmptyResultSet();
 
         return new ResultSetCurrentRow(resultSet);
     }

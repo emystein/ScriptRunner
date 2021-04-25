@@ -4,20 +4,17 @@ import ar.com.kamikaze.persistence.jdbc.script.ScriptRunnerBuilder;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.util.Lists.list;
 
 @ExtendWith(MockitoExtension.class)
-public class JdbcResultSetTest {
+public class ResultSetWrapperTest {
     private static Connection connection;
 
     @BeforeAll
@@ -44,7 +41,7 @@ public class JdbcResultSetTest {
 
     @Test
     public void getNullResults() throws SQLException {
-        var resultSet = new JdbcResultSet(new NullResultSet());
+        var resultSet = new NullResultSet();
 
         assertThat(resultSet.nextRow().getValues()).isEqualTo(list());
     }
@@ -56,11 +53,11 @@ public class JdbcResultSetTest {
         assertThat(resultSet.getMetaData().getColumnLabels()).isEqualTo(list("ID", "TITLE", "AUTHOR_ID"));
     }
 
-    private JdbcResultSet wrapResults(String aQuery) throws SQLException {
-        return new JdbcResultSet(query(aQuery));
+    private ResultSetWrapper wrapResults(String aQuery) throws SQLException {
+        return new ResultSetWrapper(query(aQuery));
     }
 
-    private ResultSet query(String query) throws SQLException {
+    private java.sql.ResultSet query(String query) throws SQLException {
         var statement = connection.createStatement();
         statement.execute(query);
         return statement.getResultSet();

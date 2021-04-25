@@ -7,7 +7,6 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.sql.ResultSet;
 import java.sql.SQLException;
 
 @ExtendWith(MockitoExtension.class)
@@ -19,7 +18,7 @@ public class PrintResultObserverTest {
 	private PrintResultObserver observer;
 
 	@Mock
-	private JdbcResultSet resultSet;
+	private ResultSetWrapper resultSet;
 
 	@Test
 	public void handle() throws SQLException {

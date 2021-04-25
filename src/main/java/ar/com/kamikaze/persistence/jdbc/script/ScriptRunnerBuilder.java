@@ -8,7 +8,8 @@ import ar.com.kamikaze.persistence.jdbc.error.ErrorHandler;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-import static ar.com.kamikaze.persistence.jdbc.commands.CommandRunnerFactory.*;
+import static ar.com.kamikaze.persistence.jdbc.commands.CommandRunnerFactory.createCommandRunner;
+import static ar.com.kamikaze.persistence.jdbc.commands.CommandRunnerFactory.errorHandler;
 
 public class ScriptRunnerBuilder {
 	private final Connection connection;

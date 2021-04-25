@@ -16,7 +16,7 @@ public class CollectedResultSetMetaDataTest {
 	@Mock
 	private java.sql.ResultSetMetaData resultSetMetaData;
 	@InjectMocks
-	private ResultSetMetaData collectedMetadata;
+	private ResultSetMetaDataWrapper collectedMetadata;
 
 	@Test
 	public void getColumnLabels() throws SQLException {

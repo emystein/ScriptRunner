@@ -1,9 +1,9 @@
 package ar.com.kamikaze.persistence.jdbc.commands;
 
 import ar.com.kamikaze.persistence.jdbc.result.ResultObserver;
+import ar.com.kamikaze.persistence.jdbc.result.ResultSet;
 import ar.com.kamikaze.persistence.jdbc.script.ScriptCommand;
 
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 

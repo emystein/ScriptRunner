@@ -1,19 +1,15 @@
 package ar.com.kamikaze.persistence.jdbc.commands;
 
 import ar.com.kamikaze.persistence.jdbc.connection.ConnectionControl;
-import ar.com.kamikaze.persistence.jdbc.result.CommandResult;
-import ar.com.kamikaze.persistence.jdbc.result.NullResultSet;
-import ar.com.kamikaze.persistence.jdbc.result.ResultObserver;
+import ar.com.kamikaze.persistence.jdbc.result.*;
 import ar.com.kamikaze.persistence.jdbc.script.ScriptCommand;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -55,7 +51,7 @@ public class DefaultCommandRunner implements CommandRunner {
 
             statement.execute(command);
 
-            resultSet = Optional.ofNullable(statement.getResultSet()).orElse(new NullResultSet());
+            resultSet = statement.getResultSet() == null ? new NullResultSet() : new ResultSetWrapper(statement.getResultSet());
 
             triggerCommandResultEvent(command, resultSet);
         } catch (SQLException e) {

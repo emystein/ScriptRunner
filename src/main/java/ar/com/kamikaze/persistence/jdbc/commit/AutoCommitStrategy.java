@@ -11,7 +11,7 @@ public class AutoCommitStrategy implements CommitStrategy {
     private final Connection connection;
 
     @Override
-    public boolean isManualCommit() {
+    public boolean isManual() {
         return false;
     }
 

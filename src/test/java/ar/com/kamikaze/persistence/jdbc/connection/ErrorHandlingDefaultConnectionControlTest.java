@@ -1,7 +1,6 @@
 package ar.com.kamikaze.persistence.jdbc.connection;
 
 import ar.com.kamikaze.persistence.jdbc.commands.CommandRunner;
-import ar.com.kamikaze.persistence.jdbc.commands.CommandRunnerFactory;
 import ar.com.kamikaze.persistence.jdbc.commit.AutoCommitStrategy;
 import ar.com.kamikaze.persistence.jdbc.error.ErrorHandler;
 import ar.com.kamikaze.persistence.jdbc.script.ScriptCommand;
@@ -15,10 +14,12 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.sql.Connection;
 import java.sql.SQLException;
 
+import static ar.com.kamikaze.persistence.jdbc.commands.CommandRunnerFactory.createCommandRunner;
+
 @ExtendWith(MockitoExtension.class)
 public class ErrorHandlingDefaultConnectionControlTest {
 	@Mock
-	private Connection wrappedConnection;
+	private Connection connection;
 	@Mock
 	private ErrorHandler errorHandler;
 
@@ -26,14 +27,14 @@ public class ErrorHandlingDefaultConnectionControlTest {
 
 	@BeforeEach
 	public void setUp() throws Exception {
-		commandRunner = CommandRunnerFactory.createCommandRunner(wrappedConnection, new AutoCommitStrategy(wrappedConnection), errorHandler);
+		commandRunner = createCommandRunner(connection, new AutoCommitStrategy(connection), errorHandler);
 	}
 
 	@Test
 	public void whenACommandFailsThenErrorHandlerShouldExecute() throws SQLException {
-		SQLException sqlException = new SQLException();
+		var sqlException = new SQLException();
 
-		Mockito.when(wrappedConnection.createStatement()).thenThrow(sqlException);
+		Mockito.when(connection.createStatement()).thenThrow(sqlException);
 
 		commandRunner.execute(new ScriptCommand(1, "failure"));
 

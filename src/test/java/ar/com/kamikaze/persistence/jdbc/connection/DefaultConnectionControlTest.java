@@ -2,6 +2,7 @@ package ar.com.kamikaze.persistence.jdbc.connection;
 
 import ar.com.kamikaze.persistence.jdbc.commands.CommandRunner;
 import ar.com.kamikaze.persistence.jdbc.commands.CommandRunnerFactory;
+import ar.com.kamikaze.persistence.jdbc.commit.AutoCommitStrategy;
 import ar.com.kamikaze.persistence.jdbc.result.NullResultSet;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -11,18 +12,19 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.Statement;
 
+import static ar.com.kamikaze.persistence.jdbc.commands.CommandRunnerFactory.createCommandRunner;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class DefaultConnectionControlTest {
-	private Connection wrappedConnection;
+	private Connection connection;
 	private CommandRunner commandRunner;
 
 	@BeforeEach
 	public void setUp() throws Exception {
-		wrappedConnection = DriverManager.getConnection("jdbc:h2:mem:test");
-		commandRunner = CommandRunnerFactory.createAutoCommitCommandRunner(wrappedConnection, false);
+		connection = DriverManager.getConnection("jdbc:h2:mem:test");
+		commandRunner = createCommandRunner(connection, new AutoCommitStrategy(connection), false);
 
-		Statement statement = wrappedConnection.createStatement();
+		Statement statement = connection.createStatement();
 		statement.execute("DROP TABLE IF EXISTS post;");
 		statement.execute("DROP TABLE IF EXISTS author;");
 		statement.execute("CREATE TABLE author(id INTEGER, name TEXT, PRIMARY KEY (id));");

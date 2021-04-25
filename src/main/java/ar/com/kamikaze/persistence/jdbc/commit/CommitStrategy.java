@@ -3,7 +3,7 @@ package ar.com.kamikaze.persistence.jdbc.commit;
 import java.sql.SQLException;
 
 public interface CommitStrategy {
-    boolean isManualCommit();
+    boolean isManual();
 
     void commit() throws SQLException;
 }

@@ -1,12 +1,13 @@
 package ar.com.kamikaze.persistence.jdbc.script;
 
 import ar.com.kamikaze.persistence.jdbc.commands.CommandRunner;
+import ar.com.kamikaze.persistence.jdbc.commit.AutoCommitStrategy;
+import ar.com.kamikaze.persistence.jdbc.commit.ManualCommitStrategy;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 
-import static ar.com.kamikaze.persistence.jdbc.commands.CommandRunnerFactory.createAutoCommitCommandRunner;
-import static ar.com.kamikaze.persistence.jdbc.commands.CommandRunnerFactory.createManualCommitCommandRunner;
+import static ar.com.kamikaze.persistence.jdbc.commands.CommandRunnerFactory.*;
 
 public class ScriptRunnerBuilder {
 	private final Connection connection;
@@ -37,8 +38,8 @@ public class ScriptRunnerBuilder {
 
 	private CommandRunner commandRunner() throws SQLException {
 		CommandRunner commandRunner = autoCommit ?
-				createAutoCommitCommandRunner(connection, stopOnError) :
-				createManualCommitCommandRunner(connection, stopOnError);
+				createCommandRunner(connection, new AutoCommitStrategy(connection), stopOnError) :
+				createCommandRunner(connection, new ManualCommitStrategy(), stopOnError);
 
 		return commandRunner;
 	}

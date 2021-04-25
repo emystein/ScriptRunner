@@ -4,7 +4,7 @@ import java.sql.SQLException;
 
 public class ManualCommitStrategy implements CommitStrategy {
     @Override
-    public boolean isManualCommit() {
+    public boolean isManual() {
         return true;
     }
 

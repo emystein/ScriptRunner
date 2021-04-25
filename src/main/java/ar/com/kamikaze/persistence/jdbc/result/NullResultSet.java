@@ -200,7 +200,7 @@ public class NullResultSet implements ResultSet {
 	}
 
 	@Override
-	public ResultSetMetaData getMetaData() throws SQLException {
+	public java.sql.ResultSetMetaData getMetaData() throws SQLException {
 		return new NullResultSetMetaData();
 	}
 

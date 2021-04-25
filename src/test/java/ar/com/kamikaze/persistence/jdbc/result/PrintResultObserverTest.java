@@ -16,14 +16,14 @@ public class PrintResultObserverTest {
 	private ResultSetPrinter resultSetPrinter;
 
 	@InjectMocks
-	private PrintResultObserver printCommandResultListener;
+	private PrintResultObserver observer;
 
 	@Mock
-	private ResultSet resultSet;
+	private JdbcResultSet resultSet;
 
 	@Test
 	public void handle() throws SQLException {
-		printCommandResultListener.handle(new CommandResult("", resultSet));
+		observer.handle(new CommandResult("", resultSet));
 
 		Mockito.verify(resultSetPrinter).print(resultSet);
 	}

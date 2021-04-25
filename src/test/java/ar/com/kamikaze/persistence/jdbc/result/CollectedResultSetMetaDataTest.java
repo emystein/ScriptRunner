@@ -6,7 +6,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -15,9 +14,9 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 public class CollectedResultSetMetaDataTest {
 	@Mock
-	private ResultSetMetaData resultSetMetaData;
+	private java.sql.ResultSetMetaData resultSetMetaData;
 	@InjectMocks
-	private CollectedResultSetMetaData collectedMetadata;
+	private ResultSetMetaData collectedMetadata;
 
 	@Test
 	public void getColumnLabels() throws SQLException {

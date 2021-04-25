@@ -36,6 +36,6 @@ public class QueryResultScriptRunnerTest extends MockLoggerTest {
 		scriptRunner.runScript("src/test/resources/select-posts.sql");
 
 		// ScriptRunner adds a space at the end of the statement read from the .sql file
-		assertDebugMessages("SELECT post.title, author.name as author FROM post, author WHERE post.author_id = author.id ORDER BY post.title ", "TITLE\tAUTHOR", "", "author 1 post 1\temystein","author 1 post 2\temystein");
+		assertDebugMessages("SELECT post.title, author.name as author FROM post, author WHERE post.author_id = author.id ORDER BY post.title ", "TITLE\tAUTHOR\n", "author 1 post 1\temystein","author 1 post 2\temystein");
 	}
 }

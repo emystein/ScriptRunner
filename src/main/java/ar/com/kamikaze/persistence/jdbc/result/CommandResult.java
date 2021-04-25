@@ -9,5 +9,10 @@ import java.sql.ResultSet;
 @RequiredArgsConstructor
 public class CommandResult {
 	private final String command;
-	private final ResultSet resultSet;
+	private final JdbcResultSet resultSet;
+
+	public CommandResult(String command, ResultSet wrappedResultSet) {
+		this.command = command;
+		this.resultSet = new JdbcResultSet(wrappedResultSet);
+	}
 }

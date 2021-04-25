@@ -12,8 +12,12 @@ public class ResultSetCurrentRow {
 		this.resultSet = resultSet;
 	}
 
+	public boolean hasValues() throws SQLException {
+		return !getValues().isEmpty();
+	}
+
 	public List<String> getValues() throws SQLException {
-		List<String> values = new ArrayList<>();
+		var values = new ArrayList<String>();
 
 		for (int i = 0; i < resultSet.getMetaData().getColumnCount(); i++) {
 			values.add(resultSet.getString(i + 1));

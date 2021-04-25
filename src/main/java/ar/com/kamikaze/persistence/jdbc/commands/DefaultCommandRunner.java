@@ -56,18 +56,18 @@ public class DefaultCommandRunner implements CommandRunner {
             statement.execute(command);
 
             resultSet = Optional.ofNullable(statement.getResultSet()).orElse(new NullResultSet());
+
+            triggerCommandResultEvent(command, resultSet);
         } catch (SQLException e) {
-            log.error("Error executing " + command + ": " + e.getMessage(), e);
+            log.error("Error executing {}: {}", command, e.getMessage(), e);
             connection.handleError(e);
         }
-
-        triggerCommandResultEvent(command, resultSet);
 
         return resultSet;
     }
 
     private void triggerCommandResultEvent(String command, ResultSet resultSet) throws SQLException {
-        CommandResult commandResult = new CommandResult(command, resultSet);
+        var commandResult = new CommandResult(command, resultSet);
 
         for (ResultObserver eventListener : resultObservers) {
             eventListener.handle(commandResult);

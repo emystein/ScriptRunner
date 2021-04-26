@@ -67,5 +67,4 @@ public class ScriptRunnerBuilderTest {
 	private void expectScriptStatementThrowException() throws SQLException {
 		Mockito.when(statement.execute("DROP TABLE IF EXISTS post ")).thenThrow(SQLException.class);
 	}
-
 }

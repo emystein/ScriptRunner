@@ -13,7 +13,7 @@ import java.sql.Statement;
 import static ar.com.kamikaze.persistence.jdbc.commands.CommandRunnerFactory.createCommandRunner;
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class DefaultConnectionControlTest {
+public class CommandRunnerTest {
 	private Connection connection;
 	private CommandRunner commandRunner;
 

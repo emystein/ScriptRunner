@@ -52,5 +52,4 @@ public class ScriptRunnerTest {
 		assertThat(resultSet.getString("post.title")).isEqualTo("author 1 post 1");
 		assertThat(resultSet.getString("author.name")).isEqualTo("emystein");
 	}
-
 }

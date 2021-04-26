@@ -3,7 +3,6 @@ package ar.com.kamikaze.persistence.jdbc.connection;
 import ar.com.kamikaze.persistence.jdbc.commands.CommandRunner;
 import ar.com.kamikaze.persistence.jdbc.commit.AutoCommitStrategy;
 import ar.com.kamikaze.persistence.jdbc.error.ErrorHandler;
-import ar.com.kamikaze.persistence.jdbc.script.ScriptCommand;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -17,7 +16,7 @@ import java.sql.SQLException;
 import static ar.com.kamikaze.persistence.jdbc.commands.CommandRunnerFactory.createCommandRunner;
 
 @ExtendWith(MockitoExtension.class)
-public class ErrorHandlingDefaultConnectionControlTest {
+public class ErrorHandlingCommandRunnerTest {
 	@Mock
 	private Connection connection;
 	@Mock
@@ -36,7 +35,7 @@ public class ErrorHandlingDefaultConnectionControlTest {
 
 		Mockito.when(connection.createStatement()).thenThrow(sqlException);
 
-		commandRunner.execute(new ScriptCommand(1, "failure"));
+		commandRunner.execute("failure");
 
 		Mockito.verify(errorHandler).handle(sqlException);
 	}

@@ -49,8 +49,4 @@ public class MockLoggerTest {
 			assertLogMessage(loggingEvent, expectedMessages[i], Level.DEBUG);
 		}
 	}
-
-	protected void assertEmptyDebugMessages() {
-		Mockito.verify(mockAppender, Mockito.never()).doAppend(captorLoggingEvent.capture());
-	}
 }

@@ -3,8 +3,6 @@ package ar.com.kamikaze.persistence.jdbc.result;
 import ar.com.kamikaze.persistence.jdbc.script.ScriptRunnerBuilder;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -13,7 +11,6 @@ import java.sql.SQLException;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.util.Lists.list;
 
-@ExtendWith(MockitoExtension.class)
 public class DefaultResultSetTest {
     private static Connection connection;
 
@@ -26,9 +23,10 @@ public class DefaultResultSetTest {
     }
 
     @Test
-    public void getRowValues() throws SQLException {
+    public void getNonEmptyValues() throws SQLException {
         var resultSet = wrapResults("SELECT id, title, author_id FROM post WHERE id = 1");
 
+        assertThat(resultSet.getMetaData().getColumnLabels()).isEqualTo(list("ID", "TITLE", "AUTHOR_ID"));
         assertThat(resultSet.nextRow().getValues()).isEqualTo(list("1", "author 1 post 1", "1"));
     }
 
@@ -36,6 +34,7 @@ public class DefaultResultSetTest {
     public void getEmptyResults() throws SQLException {
         var resultSet = wrapResults("SELECT id, title, author_id FROM post WHERE id = -1");
 
+        assertThat(resultSet.getMetaData().getColumnLabels()).isEqualTo(list("ID", "TITLE", "AUTHOR_ID"));
         assertThat(resultSet.nextRow().getValues()).isEqualTo(list());
     }
 
@@ -43,14 +42,8 @@ public class DefaultResultSetTest {
     public void getNullResults() throws SQLException {
         var resultSet = new EmptyResultSet();
 
+        assertThat(resultSet.getMetaData().getColumnLabels()).isEmpty();
         assertThat(resultSet.nextRow().getValues()).isEqualTo(list());
-    }
-
-    @Test
-    public void metadata() throws SQLException {
-        var resultSet = wrapResults("SELECT id, title, author_id FROM post WHERE id = 1");
-
-        assertThat(resultSet.getMetaData().getColumnLabels()).isEqualTo(list("ID", "TITLE", "AUTHOR_ID"));
     }
 
     private DefaultResultSet wrapResults(String aQuery) throws SQLException {

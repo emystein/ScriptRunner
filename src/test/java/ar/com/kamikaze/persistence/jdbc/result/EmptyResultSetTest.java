@@ -7,22 +7,19 @@ import java.sql.SQLException;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class EmptyResultSetTest {
-	private ResultSet nullResultSet = new EmptyResultSet();
+	private ResultSet emptyResultSet = new EmptyResultSet();
 
 	@Test
 	void metadata() throws SQLException {
-		var metaData = nullResultSet.getMetaData();
+		var metaData = emptyResultSet.getMetaData();
+
 		assertThat(metaData.getColumnCount()).isEqualTo(0);
 		assertThat(metaData.getColumnLabels()).isEmpty();
 	}
 
 	@Test
-	public void nullResultSetShouldNotHaveNext() throws SQLException {
-		assertThat(nullResultSet.hasNext()).isFalse();
-	}
-
-	@Test
-	void nextRow() throws SQLException {
-		assertThat(nullResultSet.nextRow().getValues()).isEmpty();
+	public void next() throws SQLException {
+		assertThat(emptyResultSet.hasNext()).isFalse();
+		assertThat(emptyResultSet.nextRow().getValues()).isEmpty();
 	}
 }

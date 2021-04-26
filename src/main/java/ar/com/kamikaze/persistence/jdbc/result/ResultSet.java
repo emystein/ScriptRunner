@@ -13,5 +13,5 @@ public interface ResultSet {
 
     String getString(String columnName) throws SQLException;
 
-    Integer getInt(String id) throws SQLException;
+    Integer getInt(String columnName) throws SQLException;
 }

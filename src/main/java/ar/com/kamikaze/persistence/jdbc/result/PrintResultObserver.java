@@ -5,8 +5,7 @@ import java.sql.SQLException;
 public class PrintResultObserver implements ResultObserver {
 	private ResultSetPrinter resultSetPrinter = new ResultSetPrinter();
 
-	@Override
-	public void handle(CommandResult commandResult) throws SQLException {
-		resultSetPrinter.print(commandResult.getResultSet());
+	public void handle(CommandResult result) throws SQLException {
+		resultSetPrinter.print(result.getResultSet());
 	}
 }

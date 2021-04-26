@@ -8,20 +8,18 @@ import java.util.List;
 @Slf4j
 public class ResultSetPrinter {
 	public void print(ResultSet resultSet) throws SQLException {
-		var resultSetMetaData = resultSet.getMetaData();
-
-		log.debug(separateValues(resultSetMetaData.getColumnLabels()) + "\n");
+		log.debug(join(resultSet.getMetaData().getColumnLabels()) + "\n");
 
 		// TODO: implement JdbcResultSet.iterator
 		var next = resultSet.nextRow();
 
 		while (next.hasValues()) {
-			log.debug(separateValues(next.getValues()));
+			log.debug(join(next.getValues()));
 			next = resultSet.nextRow();
 		}
 	}
 
-	private String separateValues(List<String> columnLabels) {
-		return String.join("\t", columnLabels);
+	private String join(List<String> values) {
+		return String.join("\t", values);
 	}
 }

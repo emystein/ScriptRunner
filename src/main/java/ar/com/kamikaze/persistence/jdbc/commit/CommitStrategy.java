@@ -4,7 +4,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 
 public interface CommitStrategy {
-    boolean isManual();
+    boolean isAutomatic();
 
     void commit(Connection connection) throws SQLException;
 }

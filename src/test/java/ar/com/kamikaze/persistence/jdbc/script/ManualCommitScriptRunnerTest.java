@@ -9,14 +9,14 @@ import static ar.com.kamikaze.persistence.jdbc.script.Scripts.AUHTOR_1_DUPLICATE
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class AutoCommitScriptRunnerTest extends ScriptRunnerTestCase {
+public class ManualCommitScriptRunnerTest extends ScriptRunnerTestCase {
     private ScriptRunnerBuilder scriptRunnerBuilder;
 
     @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
 
-        scriptRunnerBuilder = ScriptRunnerBuilder.forConnection(connection).autoCommit();
+        scriptRunnerBuilder = ScriptRunnerBuilder.forConnection(connection);
     }
 
     @Test
@@ -37,7 +37,7 @@ public class AutoCommitScriptRunnerTest extends ScriptRunnerTestCase {
         assertThrows(SQLException.class, () ->
             scriptRunner.runScript(AUHTOR_1_DUPLICATE_POSTS));
 
-        assertThat(postCount()).isEqualTo(1);
+        assertThat(postCount()).isEqualTo(0);
         // insert of alice happens after duplicate insert of author 1 posts
         assertFalse(authorExist("alice"));
     }

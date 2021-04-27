@@ -1,18 +1,29 @@
 package ar.com.kamikaze.persistence.jdbc.script;
 
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.Arrays;
 import java.util.Collection;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class ScriptRunnerTest {
+	private Connection connection;
+
+	@BeforeEach
+	public void setUp() throws Exception {
+		connection = DriverManager.getConnection("jdbc:h2:mem:test");
+	}
+
+	@AfterEach
+	void tearDown() throws SQLException {
+		connection.close();
+	}
+
 	public static Collection<Object[]> runScriptDataProvider() {
 		return Arrays.asList(new Object[][] {
 				{ false, false, false},
@@ -29,7 +40,6 @@ public class ScriptRunnerTest {
 	@ParameterizedTest
 	@MethodSource("runScriptDataProvider")
 	public void runScript(boolean connectionAutoCommit, boolean runnerAutoCommit, boolean runnerStopOnError) throws Exception {
-		Connection connection = DriverManager.getConnection("jdbc:h2:mem:test");
 		connection.setAutoCommit(connectionAutoCommit);
 
 		var scriptRunnerBuilder = ScriptRunnerBuilder.forConnection(connection);

@@ -7,36 +7,36 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 public class DefaultConnection implements Connection {
-    private final java.sql.Connection connection;
+    private final java.sql.Connection wrappedConnection;
     private boolean autoCommit;
     private boolean originalAutoCommit;
     private ErrorHandler errorHandler;
 
-    public DefaultConnection(java.sql.Connection connection, boolean autoCommit, ErrorHandler errorHandler) throws SQLException {
-        this.connection = connection;
+    public DefaultConnection(java.sql.Connection wrappedConnection, boolean autoCommit, ErrorHandler errorHandler) throws SQLException {
+        this.wrappedConnection = wrappedConnection;
         this.autoCommit = autoCommit;
-        this.originalAutoCommit = connection.getAutoCommit();
+        this.originalAutoCommit = wrappedConnection.getAutoCommit();
         this.errorHandler = errorHandler;
     }
 
     @Override
     public void setUpExecution() throws SQLException {
-        connection.setAutoCommit(autoCommit);
+        wrappedConnection.setAutoCommit(autoCommit);
     }
 
     @Override
     public void endExecution() throws SQLException {
-        connection.setAutoCommit(originalAutoCommit);
+        wrappedConnection.setAutoCommit(originalAutoCommit);
     }
 
     @Override
     public Statement createStatement() throws SQLException {
-        return connection.createStatement();
+        return wrappedConnection.createStatement();
     }
 
     @Override
     public void commit(CommitStrategy commitStrategy) throws SQLException {
-        commitStrategy.commit(this.connection);
+        commitStrategy.commit(this.wrappedConnection);
     }
 
     @Override
@@ -46,7 +46,7 @@ public class DefaultConnection implements Connection {
 
     @Override
     public void rollback() throws SQLException {
-        connection.rollback();
+        wrappedConnection.rollback();
         endExecution();
     }
 }

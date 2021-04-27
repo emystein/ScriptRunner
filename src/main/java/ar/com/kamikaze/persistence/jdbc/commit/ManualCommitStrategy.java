@@ -5,12 +5,12 @@ import java.sql.SQLException;
 
 public class ManualCommitStrategy implements CommitStrategy {
     @Override
-    public boolean isManual() {
-        return true;
+    public boolean isAutomatic() {
+        return false;
     }
 
     @Override
     public void commit(Connection connection) throws SQLException {
-        // do nothing
+        connection.commit();
     }
 }

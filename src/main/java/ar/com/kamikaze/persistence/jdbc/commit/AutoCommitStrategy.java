@@ -9,12 +9,12 @@ import java.sql.SQLException;
 @RequiredArgsConstructor
 public class AutoCommitStrategy implements CommitStrategy {
     @Override
-    public boolean isManual() {
-        return false;
+    public boolean isAutomatic() {
+        return true;
     }
 
     @Override
     public void commit(Connection connection) throws SQLException {
-        connection.commit();
+        // empty
     }
 }

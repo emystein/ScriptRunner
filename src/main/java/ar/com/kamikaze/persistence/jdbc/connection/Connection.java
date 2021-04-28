@@ -1,7 +1,5 @@
 package ar.com.kamikaze.persistence.jdbc.connection;
 
-import ar.com.kamikaze.persistence.jdbc.commit.CommitStrategy;
-
 import java.sql.SQLException;
 import java.sql.Statement;
 
@@ -12,7 +10,7 @@ public interface Connection {
 
     Statement createStatement() throws SQLException;
 
-    void commit(CommitStrategy commitStrategy) throws SQLException;
+    void commit() throws SQLException;
 
     void handleError(SQLException exception) throws SQLException;
 

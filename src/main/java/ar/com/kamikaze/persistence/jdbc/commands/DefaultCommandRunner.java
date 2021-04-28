@@ -1,6 +1,6 @@
 package ar.com.kamikaze.persistence.jdbc.commands;
 
-import ar.com.kamikaze.persistence.jdbc.connection.ConnectionControl;
+import ar.com.kamikaze.persistence.jdbc.connection.Connection;
 import ar.com.kamikaze.persistence.jdbc.result.*;
 import ar.com.kamikaze.persistence.jdbc.script.ScriptCommand;
 import lombok.RequiredArgsConstructor;
@@ -14,7 +14,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Slf4j
 public class DefaultCommandRunner implements CommandRunner {
-    private final ConnectionControl connection;
+    private final Connection connection;
     private List<ResultObserver> resultObservers = new ArrayList<>();
 
     @Override

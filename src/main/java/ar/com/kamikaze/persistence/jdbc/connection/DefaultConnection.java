@@ -11,10 +11,12 @@ public class DefaultConnection implements Connection {
     private boolean autoCommit;
     private boolean originalAutoCommit;
     private ErrorHandler errorHandler;
+    private CommitStrategy commitStrategy;
 
-    public DefaultConnection(java.sql.Connection wrappedConnection, boolean autoCommit, ErrorHandler errorHandler) throws SQLException {
+    public DefaultConnection(java.sql.Connection wrappedConnection, CommitStrategy commitStrategy, ErrorHandler errorHandler) throws SQLException {
         this.wrappedConnection = wrappedConnection;
-        this.autoCommit = autoCommit;
+        this.commitStrategy = commitStrategy;
+        this.autoCommit = commitStrategy.isAutomatic();
         this.originalAutoCommit = wrappedConnection.getAutoCommit();
         this.errorHandler = errorHandler;
     }
@@ -35,7 +37,7 @@ public class DefaultConnection implements Connection {
     }
 
     @Override
-    public void commit(CommitStrategy commitStrategy) throws SQLException {
+    public void commit() throws SQLException {
         commitStrategy.commit(this.wrappedConnection);
     }
 

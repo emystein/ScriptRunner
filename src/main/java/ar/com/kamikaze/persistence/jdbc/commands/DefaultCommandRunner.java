@@ -1,5 +1,7 @@
 package ar.com.kamikaze.persistence.jdbc.commands;
 
+import ar.com.kamikaze.persistence.jdbc.DefaultStatement;
+import ar.com.kamikaze.persistence.jdbc.Statement;
 import ar.com.kamikaze.persistence.jdbc.connection.Connection;
 import ar.com.kamikaze.persistence.jdbc.result.*;
 import ar.com.kamikaze.persistence.jdbc.script.ScriptCommand;
@@ -7,7 +9,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,56 +18,38 @@ public class DefaultCommandRunner implements CommandRunner {
     private final Connection connection;
     private List<ResultObserver> resultObservers = new ArrayList<>();
 
-    @Override
-    public void addResultObserver(ResultObserver eventListener) {
-        resultObservers.add(eventListener);
+    public void addResultObserver(ResultObserver observer) {
+        resultObservers.add(observer);
     }
 
-    @Override
     public void execute(List<ScriptCommand> commands) throws SQLException {
-        connection.setUpExecution();
+        connection.beginTransaction();
 
         for (ScriptCommand command : commands) {
             execute(command);
         }
 
-        connection.commit();
-
-        connection.endExecution();
+        connection.commitTransaction();
     }
 
-    @Override
     public ResultSet execute(ScriptCommand command) throws SQLException {
         return execute(command.getCommand());
     }
 
-    @Override
     public ResultSet execute(String command) throws SQLException {
         log.debug(command);
 
-        ResultSet resultSet = new EmptyResultSet();
-
         try {
-            Statement statement = connection.createStatement();
-
-            statement.execute(command);
-
-            resultSet = statement.getResultSet() == null ? new EmptyResultSet() : new DefaultResultSet(statement.getResultSet());
-
-            triggerCommandResultEvent(command, resultSet);
-        } catch (SQLException e) {
-            log.error("Error executing {}: {}", command, e.getMessage(), e);
-            connection.handleError(e);
+            return createStatement().execute(command);
+        } catch (SQLException exception) {
+            log.error("Error executing: {}. Error message: {}", command, exception.getMessage(), exception);
+            connection.handleError(exception);
         }
 
-        return resultSet;
+        return new EmptyResultSet();
     }
 
-    private void triggerCommandResultEvent(String command, ResultSet resultSet) throws SQLException {
-        var commandResult = new CommandResult(command, resultSet);
-
-        for (ResultObserver eventListener : resultObservers) {
-            eventListener.handle(commandResult);
-        }
+    private Statement createStatement() {
+        return new DefaultStatement(connection, resultObservers);
     }
 }

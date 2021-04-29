@@ -21,34 +21,25 @@ public class DefaultConnection implements Connection {
         this.errorHandler = errorHandler;
     }
 
-    @Override
-    public void setUpExecution() throws SQLException {
+    public void beginTransaction() throws SQLException {
         wrappedConnection.setAutoCommit(autoCommit);
     }
 
-    @Override
-    public void endExecution() throws SQLException {
-        wrappedConnection.setAutoCommit(originalAutoCommit);
-    }
-
-    @Override
     public Statement createStatement() throws SQLException {
         return wrappedConnection.createStatement();
     }
 
-    @Override
-    public void commit() throws SQLException {
+    public void commitTransaction() throws SQLException {
         commitStrategy.commit(this.wrappedConnection);
+        wrappedConnection.setAutoCommit(originalAutoCommit);
     }
 
-    @Override
     public void handleError(SQLException exception) throws SQLException {
         errorHandler.handle(exception);
     }
 
-    @Override
-    public void rollback() throws SQLException {
+    public void rollbackTransaction() throws SQLException {
         wrappedConnection.rollback();
-        endExecution();
+        wrappedConnection.setAutoCommit(originalAutoCommit);
     }
 }

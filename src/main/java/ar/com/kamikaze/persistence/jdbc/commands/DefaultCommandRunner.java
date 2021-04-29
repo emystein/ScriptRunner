@@ -39,17 +39,25 @@ public class DefaultCommandRunner implements CommandRunner {
     public ResultSet execute(String command) throws SQLException {
         log.debug(command);
 
+        ResultSet resultSet = new EmptyResultSet();
+
         try {
-            return createStatement().execute(command);
+            resultSet = createStatement().execute(command);
+
+            var commandResult = new CommandResult(command, resultSet);
+
+            for (ResultObserver observer : resultObservers) {
+                observer.handle(commandResult);
+            }
         } catch (SQLException exception) {
             log.error("Error executing: {}. Error message: {}", command, exception.getMessage(), exception);
             connection.handleError(exception);
         }
 
-        return new EmptyResultSet();
+        return resultSet;
     }
 
     private Statement createStatement() {
-        return new DefaultStatement(connection, resultObservers);
+        return new DefaultStatement(connection);
     }
 }

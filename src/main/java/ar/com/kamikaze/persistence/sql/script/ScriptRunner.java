@@ -1,4 +1,4 @@
-package ar.com.kamikaze.persistence.jdbc.script;
+package ar.com.kamikaze.persistence.sql.script;
 
 import ar.com.kamikaze.persistence.jdbc.commands.CommandRunner;
 import ar.com.kamikaze.persistence.jdbc.result.PrintResultObserver;

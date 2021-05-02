@@ -1,4 +1,4 @@
-package ar.com.kamikaze.persistence.jdbc.script;
+package ar.com.kamikaze.persistence.sql.script;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;

@@ -1,4 +1,4 @@
-package ar.com.kamikaze.persistence.jdbc.script;
+package ar.com.kamikaze.persistence.sql.script;
 
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;

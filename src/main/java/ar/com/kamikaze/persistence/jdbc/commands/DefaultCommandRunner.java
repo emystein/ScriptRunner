@@ -4,7 +4,7 @@ import ar.com.kamikaze.persistence.jdbc.DefaultStatement;
 import ar.com.kamikaze.persistence.jdbc.Statement;
 import ar.com.kamikaze.persistence.jdbc.connection.Connection;
 import ar.com.kamikaze.persistence.jdbc.result.*;
-import ar.com.kamikaze.persistence.jdbc.script.ScriptCommand;
+import ar.com.kamikaze.persistence.sql.script.ScriptCommand;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 

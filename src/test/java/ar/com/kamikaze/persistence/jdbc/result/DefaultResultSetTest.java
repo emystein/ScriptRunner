@@ -1,6 +1,6 @@
 package ar.com.kamikaze.persistence.jdbc.result;
 
-import ar.com.kamikaze.persistence.jdbc.script.ScriptRunnerBuilder;
+import ar.com.kamikaze.persistence.sql.script.ScriptRunnerBuilder;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 

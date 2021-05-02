@@ -1,4 +1,4 @@
-package ar.com.kamikaze.persistence.jdbc.script;
+package ar.com.kamikaze.persistence.sql.script;
 
 import lombok.extern.slf4j.Slf4j;
 

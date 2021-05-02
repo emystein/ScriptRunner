@@ -1,4 +1,4 @@
-package ar.com.kamikaze.persistence.jdbc.script;
+package ar.com.kamikaze.persistence.sql.script;
 
 import lombok.Data;
 import lombok.RequiredArgsConstructor;

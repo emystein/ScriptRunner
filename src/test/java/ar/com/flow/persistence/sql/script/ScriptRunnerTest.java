@@ -71,10 +71,8 @@ public class ScriptRunnerTest {
 
         String scriptPath = "src/test/resources/schema.sql";
 
-        var commands = new ScriptParser().parse(new FileReader(scriptPath));
-
         scriptRunner.runScript(scriptPath);
 
-        assertThat(lineExecutedCounter.getCount()).isEqualTo(commands.size());
+        assertThat(lineExecutedCounter.getCount()).isEqualTo(scriptRunner.commandCount());
     }
 }

@@ -2,9 +2,12 @@ package ar.com.flow.persistence.sql.script;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
+import java.io.FileReader;
+import java.io.IOException;
 import java.sql.*;
 import java.util.Arrays;
 import java.util.Collection;
@@ -61,5 +64,20 @@ public class ScriptRunnerTest {
 		resultSet.next();
 		assertThat(resultSet.getString("post.title")).isEqualTo("author 1 post 1");
 		assertThat(resultSet.getString("author.name")).isEqualTo("emystein");
+	}
+
+	@Test
+	void resultObservers() throws SQLException, IOException {
+		var scriptRunner= ScriptRunnerBuilder.forConnection(connection).build();
+		var lineExecutedCounter = new CommandExecutionCounter();
+		scriptRunner.addResultObserver(lineExecutedCounter);
+
+		String scriptPath = "src/test/resources/schema.sql";
+
+		var commands = new ScriptParser().parse(new FileReader(scriptPath));
+
+		scriptRunner.runScript(scriptPath);
+
+		assertThat(lineExecutedCounter.getCount()).isEqualTo(commands.size());
 	}
 }

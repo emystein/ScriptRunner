@@ -3,6 +3,7 @@ package ar.com.flow.persistence.sql.script;
 import ar.com.flow.persistence.jdbc.commit.CommitStrategy;
 import ar.com.flow.persistence.jdbc.connection.DefaultConnection;
 import ar.com.flow.persistence.jdbc.error.ErrorHandler;
+import ar.com.flow.persistence.jdbc.result.CommandResult;
 import ar.com.flow.persistence.jdbc.result.PrintResultObserver;
 import ar.com.flow.persistence.jdbc.result.ResultObserver;
 
@@ -56,12 +57,18 @@ public class ScriptRunner {
 	private void execute(List<LineCommand> commands) throws SQLException {
 		connection.beginTransaction();
 
-		var scriptCommands = commands.stream().map(c ->
-				new ScriptCommand(c.getLineNumber(), c.getCommand(), connection, resultObservers)
-		).collect(toList());
+		var scriptCommands = commands.stream()
+				.map(c -> new ScriptCommand(c.getLineNumber(), c.getCommand(), connection))
+				.collect(toList());
 
 		for (ScriptCommand command : scriptCommands) {
-			command.execute();
+			var resultSet = command.execute();
+
+			var commandResult = new CommandResult(command, resultSet);
+
+			for (ResultObserver observer : resultObservers) {
+				observer.handle(commandResult);
+			}
 		}
 
 		connection.commitTransaction();

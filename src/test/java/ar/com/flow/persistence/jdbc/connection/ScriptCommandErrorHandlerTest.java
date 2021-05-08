@@ -11,10 +11,9 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.ArrayList;
 
 @ExtendWith(MockitoExtension.class)
-public class ErrorHandlingCommandRunnerTest {
+public class ScriptCommandErrorHandlerTest {
     @Mock
     private Connection connection;
     @Mock
@@ -28,7 +27,7 @@ public class ErrorHandlingCommandRunnerTest {
 
         var connectionWrapper = new DefaultConnection(connection, new AutoCommitStrategy(), errorHandler);
 
-        var commandRunner = new ScriptCommand(1, "failure", connectionWrapper, new ArrayList<>());
+        var commandRunner = new ScriptCommand(1, "failure", connectionWrapper);
 
         commandRunner.execute();
 

@@ -1,5 +1,6 @@
 package ar.com.flow.persistence.jdbc.result;
 
+import ar.com.flow.persistence.sql.script.ScriptCommand;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
@@ -9,8 +10,8 @@ public class CommandResult {
 	private final String command;
 	private final ResultSet resultSet;
 
-	public CommandResult(String command, java.sql.ResultSet wrappedResultSet) {
-		this.command = command;
-		this.resultSet = new DefaultResultSet(wrappedResultSet);
+	public CommandResult(ScriptCommand command, ResultSet resultSet) {
+		this.command = command.getCommand();
+		this.resultSet = resultSet;
 	}
 }

@@ -1,5 +1,6 @@
 package ar.com.flow.persistence.jdbc.result;
 
+import ar.com.flow.persistence.sql.script.ScriptCommand;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -22,7 +23,7 @@ public class PrintResultObserverTest {
 
 	@Test
 	public void handle() throws SQLException {
-		observer.handle(new CommandResult("", resultSet));
+		observer.handle(new CommandResult(new ScriptCommand(1, "", null), resultSet));
 
 		Mockito.verify(resultSetPrinter).print(resultSet);
 	}

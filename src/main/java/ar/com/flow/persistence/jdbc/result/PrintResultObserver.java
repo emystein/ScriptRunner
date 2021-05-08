@@ -1,11 +1,14 @@
 package ar.com.flow.persistence.jdbc.result;
 
+import ar.com.flow.persistence.sql.script.ScriptCommand;
+
 import java.sql.SQLException;
 
 public class PrintResultObserver implements ResultObserver {
 	private ResultSetPrinter resultSetPrinter = new ResultSetPrinter();
 
-	public void handle(CommandResult result) throws SQLException {
-		resultSetPrinter.print(result.getResultSet());
+	@Override
+	public void handle(ScriptCommand command, ResultSet resultSet) throws SQLException {
+		resultSetPrinter.print(resultSet);
 	}
 }

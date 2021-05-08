@@ -1,7 +1,6 @@
 package ar.com.flow.persistence.sql.script;
 
 import ar.com.flow.persistence.jdbc.connection.Connection;
-import ar.com.flow.persistence.jdbc.result.CommandResult;
 import ar.com.flow.persistence.jdbc.result.ResultObserver;
 import lombok.RequiredArgsConstructor;
 
@@ -46,10 +45,8 @@ public class ScriptRunner {
         for (ScriptCommand command : commands) {
             var resultSet = command.execute();
 
-            var commandResult = new CommandResult(command, resultSet);
-
             for (ResultObserver observer : commandResultObservers) {
-                observer.handle(commandResult);
+                observer.handle(command, resultSet);
             }
         }
 

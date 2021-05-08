@@ -2,6 +2,7 @@ package ar.com.flow.persistence.sql.script;
 
 import ar.com.flow.persistence.jdbc.commit.AutoCommitStrategy;
 import ar.com.flow.persistence.jdbc.commit.ManualCommitStrategy;
+import ar.com.flow.persistence.jdbc.connection.DefaultConnection;
 import ar.com.flow.persistence.jdbc.error.ContinueExecution;
 import ar.com.flow.persistence.jdbc.error.Rollback;
 
@@ -42,6 +43,7 @@ public class ScriptRunnerBuilder {
 	public ScriptRunner build() throws SQLException {
 		var commitStrategy = autoCommit ? new AutoCommitStrategy() : new ManualCommitStrategy();
 		var errorHandler = stopOnError ? new Rollback(connection) : new ContinueExecution();
-		return ScriptRunner.create(connection, commitStrategy, errorHandler);
+		var connectionWrapper = new DefaultConnection(connection, commitStrategy, errorHandler);
+		return new ScriptRunner(connectionWrapper);
 	}
 }

@@ -1,8 +1,6 @@
 package ar.com.flow.persistence.sql.script;
 
-import ar.com.flow.persistence.jdbc.commit.CommitStrategy;
-import ar.com.flow.persistence.jdbc.connection.DefaultConnection;
-import ar.com.flow.persistence.jdbc.error.ErrorHandler;
+import ar.com.flow.persistence.jdbc.connection.Connection;
 import ar.com.flow.persistence.jdbc.result.CommandResult;
 import ar.com.flow.persistence.jdbc.result.PrintResultObserver;
 import ar.com.flow.persistence.jdbc.result.ResultObserver;
@@ -11,7 +9,6 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
-import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -23,17 +20,10 @@ import static java.util.stream.Collectors.toList;
  */
 public class ScriptRunner {
 	private final ScriptParser scriptParser = new ScriptParser();
-	private final ar.com.flow.persistence.jdbc.connection.Connection connection;
+	private final Connection connection;
 	private List<ResultObserver> resultObservers = new ArrayList<>();
 
-	public static ScriptRunner create(Connection connection,
-													CommitStrategy commitStrategy,
-													ErrorHandler errorHandler) throws SQLException {
-		var connectionWrapper = new DefaultConnection(connection, commitStrategy, errorHandler);
-		return new ScriptRunner(connectionWrapper);
-	}
-
-	public ScriptRunner(ar.com.flow.persistence.jdbc.connection.Connection connection) {
+	public ScriptRunner(Connection connection) {
 		this.connection = connection;
 		this.addResultObserver(new PrintResultObserver());
 	}

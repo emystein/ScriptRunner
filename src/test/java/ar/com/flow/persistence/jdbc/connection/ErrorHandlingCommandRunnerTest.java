@@ -1,9 +1,8 @@
 package ar.com.flow.persistence.jdbc.connection;
 
-import ar.com.flow.persistence.jdbc.commands.CommandRunner;
 import ar.com.flow.persistence.jdbc.commit.AutoCommitStrategy;
 import ar.com.flow.persistence.jdbc.error.ErrorHandler;
-import org.junit.jupiter.api.BeforeEach;
+import ar.com.flow.persistence.sql.script.ScriptCommand;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
@@ -12,31 +11,27 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-
-import static ar.com.flow.persistence.jdbc.commands.CommandRunnerFactory.createCommandRunner;
+import java.util.ArrayList;
 
 @ExtendWith(MockitoExtension.class)
 public class ErrorHandlingCommandRunnerTest {
-	@Mock
-	private Connection connection;
-	@Mock
-	private ErrorHandler errorHandler;
+    @Mock
+    private Connection connection;
+    @Mock
+    private ErrorHandler errorHandler;
 
-	private CommandRunner commandRunner;
+    @Test
+    public void whenACommandFailsThenErrorHandlerShouldExecute() throws SQLException {
+        var sqlException = new SQLException();
 
-	@BeforeEach
-	public void setUp() throws Exception {
-		commandRunner = createCommandRunner(connection, new AutoCommitStrategy(), errorHandler);
-	}
+        Mockito.when(connection.createStatement()).thenThrow(sqlException);
 
-	@Test
-	public void whenACommandFailsThenErrorHandlerShouldExecute() throws SQLException {
-		var sqlException = new SQLException();
+        var connectionWrapper = new DefaultConnection(connection, new AutoCommitStrategy(), errorHandler);
 
-		Mockito.when(connection.createStatement()).thenThrow(sqlException);
+        var commandRunner = new ScriptCommand(1, "failure", connectionWrapper, new ArrayList<>());
 
-		commandRunner.execute("failure");
+        commandRunner.execute();
 
-		Mockito.verify(errorHandler).handle(sqlException);
-	}
+        Mockito.verify(errorHandler).handle(sqlException);
+    }
 }

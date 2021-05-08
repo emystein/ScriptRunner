@@ -1,15 +1,12 @@
 package ar.com.flow.persistence.sql.script;
 
-import ar.com.flow.persistence.jdbc.commands.CommandRunner;
 import ar.com.flow.persistence.jdbc.commit.AutoCommitStrategy;
 import ar.com.flow.persistence.jdbc.commit.ManualCommitStrategy;
-import ar.com.flow.persistence.jdbc.error.ErrorHandler;
+import ar.com.flow.persistence.jdbc.error.ContinueExecution;
+import ar.com.flow.persistence.jdbc.error.Rollback;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-
-import static ar.com.flow.persistence.jdbc.commands.CommandRunnerFactory.createCommandRunner;
-import static ar.com.flow.persistence.jdbc.commands.CommandRunnerFactory.errorHandler;
 
 public class ScriptRunnerBuilder {
 	private final Connection connection;
@@ -35,16 +32,8 @@ public class ScriptRunnerBuilder {
 	}
 
 	public ScriptRunner build() throws SQLException {
-		return new ScriptRunner(commandRunner());
-	}
-
-	private CommandRunner commandRunner() throws SQLException {
-		ErrorHandler errorHandler = errorHandler(connection, stopOnError);
-
-		CommandRunner commandRunner = autoCommit ?
-				createCommandRunner(connection, new AutoCommitStrategy(), errorHandler) :
-				createCommandRunner(connection, new ManualCommitStrategy(), errorHandler);
-
-		return commandRunner;
+		var commitStrategy = autoCommit ? new AutoCommitStrategy() : new ManualCommitStrategy();
+		var errorHandler = stopOnError ? new Rollback(connection) : new ContinueExecution();
+		return ScriptRunner.create(connection, commitStrategy, errorHandler);
 	}
 }

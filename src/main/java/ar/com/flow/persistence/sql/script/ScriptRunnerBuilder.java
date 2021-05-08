@@ -22,12 +22,20 @@ public class ScriptRunnerBuilder {
 	}
 
 	public ScriptRunnerBuilder autoCommit() {
-		this.autoCommit = true;
+		return autoCommit(true);
+	}
+
+	public ScriptRunnerBuilder autoCommit(boolean autoCommit) {
+		this.autoCommit = autoCommit;
 		return this;
 	}
 
 	public ScriptRunnerBuilder stopOnError() {
-		this.stopOnError = true;
+		return stopOnError(true);
+	}
+
+	public ScriptRunnerBuilder stopOnError(boolean stopOnError) {
+		this.stopOnError = stopOnError;
 		return this;
 	}
 

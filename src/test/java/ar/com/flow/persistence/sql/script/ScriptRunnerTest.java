@@ -15,69 +15,66 @@ import java.util.Collection;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class ScriptRunnerTest {
-	private Connection connection;
+    private Connection connection;
 
-	@BeforeEach
-	public void setUp() throws Exception {
-		connection = DriverManager.getConnection("jdbc:h2:mem:test");
-	}
+    @BeforeEach
+    public void setUp() throws Exception {
+        connection = DriverManager.getConnection("jdbc:h2:mem:test");
+    }
 
-	@AfterEach
-	void tearDown() throws SQLException {
-		connection.close();
-	}
+    @AfterEach
+    void tearDown() throws SQLException {
+        connection.close();
+    }
 
-	public static Collection<Object[]> runScriptDataProvider() {
-		return Arrays.asList(new Object[][] {
-				{ false, false, false},
-				{ false, false, true },
-				{ false, true, false},
-				{ false, true, true },
-				{ true, false, false},
-				{ true, false, true },
-				{ true, true, false },
-				{ true, true, true }
-		});
-	}
+    public static Collection<Object[]> runScriptDataProvider() {
+        return Arrays.asList(new Object[][]{
+                {false, false, false},
+                {false, false, true},
+                {false, true, false},
+                {false, true, true},
+                {true, false, false},
+                {true, false, true},
+                {true, true, false},
+                {true, true, true}
+        });
+    }
 
-	@ParameterizedTest
-	@MethodSource("runScriptDataProvider")
-	public void runScript(boolean connectionAutoCommit, boolean runnerAutoCommit, boolean runnerStopOnError) throws Exception {
-		connection.setAutoCommit(connectionAutoCommit);
+    @ParameterizedTest
+    @MethodSource("runScriptDataProvider")
+    public void runScript(boolean connectionAutoCommit, boolean runnerAutoCommit, boolean runnerStopOnError) throws Exception {
+        connection.setAutoCommit(connectionAutoCommit);
 
-		var scriptRunnerBuilder = ScriptRunnerBuilder.forConnection(connection);
-		if (runnerAutoCommit) {
-			scriptRunnerBuilder.autoCommit();
-		}
-		if (runnerStopOnError) {
-			scriptRunnerBuilder.stopOnError();
-		}
-		ScriptRunner scriptRunner = scriptRunnerBuilder.build();
-		scriptRunner.runScript("src/test/resources/schema.sql");
-		scriptRunner.runScript("src/test/resources/insert-posts.sql");
+        var scriptRunner = ScriptRunnerBuilder.forConnection(connection)
+                .autoCommit(runnerAutoCommit)
+                .stopOnError(runnerStopOnError)
+                .build();
 
-		Statement statement = connection.createStatement();
+        scriptRunner.runScript("src/test/resources/schema.sql");
+        scriptRunner.runScript("src/test/resources/insert-posts.sql");
 
-		// assertions
-		statement.execute("SELECT post.title, author.name FROM post, author WHERE post.author_id = author.id ORDER BY post.title");
-		ResultSet resultSet = statement.getResultSet();
-		resultSet.next();
-		assertThat(resultSet.getString("post.title")).isEqualTo("author 1 post 1");
-		assertThat(resultSet.getString("author.name")).isEqualTo("emystein");
-	}
+        Statement statement = connection.createStatement();
 
-	@Test
-	void resultObservers() throws SQLException, IOException {
-		var scriptRunner= ScriptRunnerBuilder.forConnection(connection).build();
-		var lineExecutedCounter = new CommandExecutionCounter();
-		scriptRunner.addResultObserver(lineExecutedCounter);
+        // assertions
+        statement.execute("SELECT post.title, author.name FROM post, author WHERE post.author_id = author.id ORDER BY post.title");
+        ResultSet resultSet = statement.getResultSet();
+        resultSet.next();
+        assertThat(resultSet.getString("post.title")).isEqualTo("author 1 post 1");
+        assertThat(resultSet.getString("author.name")).isEqualTo("emystein");
+    }
 
-		String scriptPath = "src/test/resources/schema.sql";
+    @Test
+    void resultObservers() throws SQLException, IOException {
+        var scriptRunner = ScriptRunnerBuilder.forConnection(connection).build();
+        var lineExecutedCounter = new CommandExecutionCounter();
+        scriptRunner.addResultObserver(lineExecutedCounter);
 
-		var commands = new ScriptParser().parse(new FileReader(scriptPath));
+        String scriptPath = "src/test/resources/schema.sql";
 
-		scriptRunner.runScript(scriptPath);
+        var commands = new ScriptParser().parse(new FileReader(scriptPath));
 
-		assertThat(lineExecutedCounter.getCount()).isEqualTo(commands.size());
-	}
+        scriptRunner.runScript(scriptPath);
+
+        assertThat(lineExecutedCounter.getCount()).isEqualTo(commands.size());
+    }
 }

@@ -43,7 +43,6 @@ public class ScriptRunnerBuilder {
 	public ScriptRunner build() throws SQLException {
 		var commitStrategy = autoCommit ? new AutoCommitStrategy() : new ManualCommitStrategy();
 		var errorHandler = stopOnError ? new Rollback(connection) : new ContinueExecution();
-		var connectionWrapper = new DefaultConnection(connection, commitStrategy, errorHandler);
-		return new ScriptRunner(connectionWrapper);
+		return new ScriptRunner(new DefaultConnection(connection, commitStrategy, errorHandler));
 	}
 }

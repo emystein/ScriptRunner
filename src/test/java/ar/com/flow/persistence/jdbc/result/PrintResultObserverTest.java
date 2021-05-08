@@ -23,7 +23,7 @@ public class PrintResultObserverTest {
 
 	@Test
 	public void handle() throws SQLException {
-		observer.handle(new CommandResult(new ScriptCommand(1, "", null), resultSet));
+		observer.handle(new CommandResult(new ScriptCommand("", null), resultSet));
 
 		Mockito.verify(resultSetPrinter).print(resultSet);
 	}

@@ -5,10 +5,8 @@ import ar.com.flow.persistence.jdbc.result.CommandResult;
 import ar.com.flow.persistence.jdbc.result.ResultObserver;
 import lombok.RequiredArgsConstructor;
 
-import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.Reader;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,11 +20,11 @@ import static java.util.stream.Collectors.toList;
 public class ScriptRunner {
     private final ScriptParser scriptParser = new ScriptParser();
     private final Connection connection;
-    private List<ResultObserver> resultObservers = new ArrayList<>();
-    private List<LineCommand> commands;
+    private List<ResultObserver> commandResultObservers = new ArrayList<>();
+    private int executedCommandCount;
 
     public void addResultObserver(ResultObserver observer) {
-        resultObservers.add(observer);
+        commandResultObservers.add(observer);
     }
 
     public void setDelimiter(String delimiter, boolean fullLineDelimiter) {
@@ -34,23 +32,23 @@ public class ScriptRunner {
     }
 
     public void runScript(String scriptPath) throws IOException, SQLException {
-        commands = scriptParser.parse(new FileReader(scriptPath));
+        var commands = scriptParser.parse(new FileReader(scriptPath)).stream()
+                .map(lineCommand -> new ScriptCommand(lineCommand.getCommand(), connection))
+                .collect(toList());
         execute(commands);
     }
 
-    private void execute(List<LineCommand> commands) throws SQLException {
+    private void execute(List<ScriptCommand> commands) throws SQLException {
+        executedCommandCount = commands.size();
+
         connection.beginTransaction();
 
-        var scriptCommands = commands.stream()
-                .map(c -> new ScriptCommand(c.getLineNumber(), c.getCommand(), connection))
-                .collect(toList());
-
-        for (ScriptCommand command : scriptCommands) {
+        for (ScriptCommand command : commands) {
             var resultSet = command.execute();
 
             var commandResult = new CommandResult(command, resultSet);
 
-            for (ResultObserver observer : resultObservers) {
+            for (ResultObserver observer : commandResultObservers) {
                 observer.handle(commandResult);
             }
         }
@@ -58,7 +56,7 @@ public class ScriptRunner {
         connection.commitTransaction();
     }
 
-    public int commandCount() {
-        return commands.size();
+    public int executedCommandCount() {
+        return executedCommandCount;
     }
 }

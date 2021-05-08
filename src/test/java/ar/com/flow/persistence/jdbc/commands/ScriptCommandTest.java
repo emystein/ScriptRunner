@@ -40,7 +40,7 @@ public class ScriptCommandTest {
     void execute() throws SQLException {
         var defaultConnection = new DefaultConnection(connection, new AutoCommitStrategy(), new Rollback(connection));
 
-        var command = new ScriptCommand(1, "SELECT * FROM post;", defaultConnection);
+        var command = new ScriptCommand("SELECT * FROM post;", defaultConnection);
 
         ResultSet resultSet = command.execute();
 

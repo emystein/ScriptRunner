@@ -6,7 +6,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
-import java.io.FileReader;
 import java.io.IOException;
 import java.sql.*;
 import java.util.Arrays;
@@ -73,6 +72,6 @@ public class ScriptRunnerTest {
 
         scriptRunner.runScript(scriptPath);
 
-        assertThat(lineExecutedCounter.getCount()).isEqualTo(scriptRunner.commandCount());
+        assertThat(lineExecutedCounter.getCount()).isEqualTo(scriptRunner.executedCommandCount());
     }
 }

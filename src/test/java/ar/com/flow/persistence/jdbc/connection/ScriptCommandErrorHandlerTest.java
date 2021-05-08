@@ -27,7 +27,7 @@ public class ScriptCommandErrorHandlerTest {
 
         var connectionWrapper = new DefaultConnection(connection, new AutoCommitStrategy(), errorHandler);
 
-        var commandRunner = new ScriptCommand(1, "failure", connectionWrapper);
+        var commandRunner = new ScriptCommand("failure", connectionWrapper);
 
         commandRunner.execute();
 

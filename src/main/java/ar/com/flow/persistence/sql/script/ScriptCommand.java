@@ -14,7 +14,6 @@ import java.sql.SQLException;
 @RequiredArgsConstructor
 @Slf4j
 public class ScriptCommand {
-	private final int lineNumber;
 	private final String command;
     private final Connection connection;
 

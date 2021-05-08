@@ -20,50 +20,45 @@ import static java.util.stream.Collectors.toList;
  */
 @RequiredArgsConstructor
 public class ScriptRunner {
-	private final ScriptParser scriptParser = new ScriptParser();
-	private final Connection connection;
-	private List<ResultObserver> resultObservers = new ArrayList<>();
-	private int commandCount;
+    private final ScriptParser scriptParser = new ScriptParser();
+    private final Connection connection;
+    private List<ResultObserver> resultObservers = new ArrayList<>();
+    private List<LineCommand> commands;
 
-	public void addResultObserver(ResultObserver observer) {
-		resultObservers.add(observer);
-	}
+    public void addResultObserver(ResultObserver observer) {
+        resultObservers.add(observer);
+    }
 
-	public void setDelimiter(String delimiter, boolean fullLineDelimiter) {
-		scriptParser.setDelimiter(delimiter, fullLineDelimiter);
-	}
+    public void setDelimiter(String delimiter, boolean fullLineDelimiter) {
+        scriptParser.setDelimiter(delimiter, fullLineDelimiter);
+    }
 
-	public void runScript(String scriptPath) throws IOException, SQLException {
-		runScript(new BufferedReader(new FileReader(scriptPath)));
-	}
+    public void runScript(String scriptPath) throws IOException, SQLException {
+        commands = scriptParser.parse(new FileReader(scriptPath));
+        execute(commands);
+    }
 
-	public void runScript(Reader reader) throws IOException, SQLException {
-		List<LineCommand> commands = scriptParser.parse(reader);
-		commandCount = commands.size();
-		execute(commands);
-	}
+    private void execute(List<LineCommand> commands) throws SQLException {
+        connection.beginTransaction();
 
-	private void execute(List<LineCommand> commands) throws SQLException {
-		connection.beginTransaction();
+        var scriptCommands = commands.stream()
+                .map(c -> new ScriptCommand(c.getLineNumber(), c.getCommand(), connection))
+                .collect(toList());
 
-		var scriptCommands = commands.stream()
-				.map(c -> new ScriptCommand(c.getLineNumber(), c.getCommand(), connection))
-				.collect(toList());
+        for (ScriptCommand command : scriptCommands) {
+            var resultSet = command.execute();
 
-		for (ScriptCommand command : scriptCommands) {
-			var resultSet = command.execute();
+            var commandResult = new CommandResult(command, resultSet);
 
-			var commandResult = new CommandResult(command, resultSet);
+            for (ResultObserver observer : resultObservers) {
+                observer.handle(commandResult);
+            }
+        }
 
-			for (ResultObserver observer : resultObservers) {
-				observer.handle(commandResult);
-			}
-		}
+        connection.commitTransaction();
+    }
 
-		connection.commitTransaction();
-	}
-
-	public int commandCount() {
-		return commandCount;
-	}
+    public int commandCount() {
+        return commands.size();
+    }
 }

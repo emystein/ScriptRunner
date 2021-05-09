@@ -1,13 +1,10 @@
-package ar.com.flow.persistence.jdbc.commands;
+package ar.com.flow.persistence.sql.script;
 
 import ar.com.flow.persistence.jdbc.commit.AutoCommitStrategy;
 import ar.com.flow.persistence.jdbc.connection.DefaultConnection;
 import ar.com.flow.persistence.jdbc.error.Rollback;
 import ar.com.flow.persistence.jdbc.result.ResultObserver;
 import ar.com.flow.persistence.jdbc.result.ResultSet;
-import ar.com.flow.persistence.sql.script.ScriptCommand;
-import ar.com.flow.persistence.sql.script.ScriptRunner;
-import ar.com.flow.persistence.sql.script.ScriptRunnerBuilder;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

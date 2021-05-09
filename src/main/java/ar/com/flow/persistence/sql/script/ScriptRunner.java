@@ -39,7 +39,7 @@ public class ScriptRunner {
 
     private void execute(List<ScriptCommand> commands) throws SQLException {
         connection.beginTransaction();
-        var lineExecutedCounter = new CommandExecutionCounter();
+
         for (ScriptCommand command : commands) {
             command.execute();
         }

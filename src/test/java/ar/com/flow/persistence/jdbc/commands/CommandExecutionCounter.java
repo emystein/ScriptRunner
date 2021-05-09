@@ -1,7 +1,8 @@
-package ar.com.flow.persistence.sql.script;
+package ar.com.flow.persistence.jdbc.commands;
 
 import ar.com.flow.persistence.jdbc.result.ResultObserver;
 import ar.com.flow.persistence.jdbc.result.ResultSet;
+import ar.com.flow.persistence.sql.script.ScriptCommand;
 
 import java.sql.SQLException;
 

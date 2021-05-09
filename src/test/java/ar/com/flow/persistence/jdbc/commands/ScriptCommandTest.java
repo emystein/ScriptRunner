@@ -5,7 +5,6 @@ import ar.com.flow.persistence.jdbc.connection.DefaultConnection;
 import ar.com.flow.persistence.jdbc.error.Rollback;
 import ar.com.flow.persistence.jdbc.result.ResultObserver;
 import ar.com.flow.persistence.jdbc.result.ResultSet;
-import ar.com.flow.persistence.sql.script.CommandExecutionCounter;
 import ar.com.flow.persistence.sql.script.ScriptCommand;
 import ar.com.flow.persistence.sql.script.ScriptRunner;
 import ar.com.flow.persistence.sql.script.ScriptRunnerBuilder;

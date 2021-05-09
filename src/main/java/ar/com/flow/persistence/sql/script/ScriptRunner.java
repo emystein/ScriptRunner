@@ -20,7 +20,6 @@ public class ScriptRunner {
     private final ScriptParser scriptParser = new ScriptParser();
     private final Connection connection;
     private List<ResultObserver> commandResultObservers = new ArrayList<>();
-    private int executedCommandCount;
 
     public void addResultObserver(ResultObserver observer) {
         commandResultObservers.add(observer);
@@ -45,11 +44,5 @@ public class ScriptRunner {
         }
 
         connection.commitTransaction();
-
-        executedCommandCount = commands.size();
-    }
-
-    public int executedCommandCount() {
-        return executedCommandCount;
     }
 }

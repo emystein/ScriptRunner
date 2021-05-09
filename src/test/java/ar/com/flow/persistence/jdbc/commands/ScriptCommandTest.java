@@ -3,7 +3,9 @@ package ar.com.flow.persistence.jdbc.commands;
 import ar.com.flow.persistence.jdbc.commit.AutoCommitStrategy;
 import ar.com.flow.persistence.jdbc.connection.DefaultConnection;
 import ar.com.flow.persistence.jdbc.error.Rollback;
+import ar.com.flow.persistence.jdbc.result.ResultObserver;
 import ar.com.flow.persistence.jdbc.result.ResultSet;
+import ar.com.flow.persistence.sql.script.CommandExecutionCounter;
 import ar.com.flow.persistence.sql.script.ScriptCommand;
 import ar.com.flow.persistence.sql.script.ScriptRunner;
 import ar.com.flow.persistence.sql.script.ScriptRunnerBuilder;
@@ -15,6 +17,7 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -40,10 +43,15 @@ public class ScriptCommandTest {
     void execute() throws SQLException {
         var defaultConnection = new DefaultConnection(connection, new AutoCommitStrategy(), new Rollback(connection));
 
-        var command = new ScriptCommand("SELECT * FROM post;", defaultConnection);
+        var resultObservers = new ArrayList<ResultObserver>();
+        var lineExecutedCounter = new CommandExecutionCounter();
+        resultObservers.add(lineExecutedCounter);
+
+        var command = new ScriptCommand("SELECT * FROM post;", defaultConnection, resultObservers);
 
         ResultSet resultSet = command.execute();
 
         assertThat(resultSet.hasNext()).isTrue();
+        assertThat(lineExecutedCounter.getCount()).isEqualTo(1);
     }
 }

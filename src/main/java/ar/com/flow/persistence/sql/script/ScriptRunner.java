@@ -32,25 +32,21 @@ public class ScriptRunner {
 
     public void runScript(String scriptPath) throws IOException, SQLException {
         var commands = scriptParser.parse(new FileReader(scriptPath)).stream()
-                .map(lineCommand -> new ScriptCommand(lineCommand.getCommand(), connection))
+                .map(lineCommand -> new ScriptCommand(lineCommand.getCommand(), connection, commandResultObservers))
                 .collect(toList());
         execute(commands);
     }
 
     private void execute(List<ScriptCommand> commands) throws SQLException {
-        executedCommandCount = commands.size();
-
         connection.beginTransaction();
-
+        var lineExecutedCounter = new CommandExecutionCounter();
         for (ScriptCommand command : commands) {
-            var resultSet = command.execute();
-
-            for (ResultObserver observer : commandResultObservers) {
-                observer.handle(command, resultSet);
-            }
+            command.execute();
         }
 
         connection.commitTransaction();
+
+        executedCommandCount = commands.size();
     }
 
     public int executedCommandCount() {

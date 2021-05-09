@@ -5,7 +5,7 @@ import ar.com.flow.persistence.jdbc.result.ResultSet;
 
 import java.sql.SQLException;
 
-class CommandExecutionCounter implements ResultObserver {
+public class CommandExecutionCounter implements ResultObserver {
     private int count;
 
     public void handle(ScriptCommand command, ResultSet resultSet) throws SQLException {

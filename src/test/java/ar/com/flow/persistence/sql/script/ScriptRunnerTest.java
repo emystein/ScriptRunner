@@ -61,17 +61,4 @@ public class ScriptRunnerTest {
         assertThat(resultSet.getString("post.title")).isEqualTo("author 1 post 1");
         assertThat(resultSet.getString("author.name")).isEqualTo("emystein");
     }
-
-    @Test
-    void resultObservers() throws SQLException, IOException {
-        var scriptRunner = ScriptRunnerBuilder.forConnection(connection).build();
-        var lineExecutedCounter = new CommandExecutionCounter();
-        scriptRunner.addResultObserver(lineExecutedCounter);
-
-        String scriptPath = "src/test/resources/schema.sql";
-
-        scriptRunner.runScript(scriptPath);
-
-        assertThat(lineExecutedCounter.getCount()).isEqualTo(scriptRunner.executedCommandCount());
-    }
 }

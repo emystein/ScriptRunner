@@ -9,7 +9,6 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.sql.SQLException;
-import java.util.ArrayList;
 
 @ExtendWith(MockitoExtension.class)
 public class PrintResultObserverTest {
@@ -20,11 +19,14 @@ public class PrintResultObserverTest {
 	private ResultSetPrinter resultSetPrinter;
 
 	@Mock
-	private DefaultResultSet resultSet;
+	private ScriptCommand scriptCommand;
+
+	@Mock
+	private ResultSet resultSet;
 
 	@Test
 	public void handle() throws SQLException {
-		observer.handle(new ScriptCommand("", null, new ArrayList<>()), resultSet);
+		observer.handle(scriptCommand, resultSet);
 
 		Mockito.verify(resultSetPrinter).print(resultSet);
 	}

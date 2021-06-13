@@ -1,13 +1,14 @@
 package ar.com.flow.persistence.jdbc.result;
 
 import java.sql.SQLException;
+import java.util.Iterator;
 
-public interface ResultSet {
+public interface ResultSet extends Iterator<ResultSetCurrentRow> {
     ResultSetMetaData getMetaData() throws SQLException;
 
-    boolean hasNext() throws SQLException;
+    boolean hasNext();
 
-    ResultSetCurrentRow nextRow() throws SQLException;
+    ResultSetCurrentRow next();
 
     String getString(int columnIndex) throws SQLException;
 

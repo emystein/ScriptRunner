@@ -9,12 +9,12 @@ public class EmptyResultSet implements ResultSet {
 	}
 
 	@Override
-	public boolean hasNext() throws SQLException {
+	public boolean hasNext() {
 		return false;
 	}
 
 	@Override
-	public ResultSetCurrentRow nextRow() throws SQLException {
+	public ResultSetCurrentRow next() {
 		return new ResultSetCurrentRow(this);
 	}
 

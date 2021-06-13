@@ -13,11 +13,15 @@ public class DefaultResultSet implements ResultSet {
         return new DefaultResultSetMetaData(wrappedResultSet.getMetaData());
     }
 
-    public boolean hasNext() throws SQLException {
-        return wrappedResultSet.next();
+    public boolean hasNext() {
+        try {
+            return wrappedResultSet.next();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    public ResultSetCurrentRow nextRow() throws SQLException {
+    public ResultSetCurrentRow next() {
         var resultSet = hasNext() ? this : new EmptyResultSet();
 
         return new ResultSetCurrentRow(resultSet);

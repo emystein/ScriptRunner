@@ -11,11 +11,11 @@ public class ResultSetPrinter {
 		log.debug(join(resultSet.getMetaData().getColumnLabels()) + "\n");
 
 		// TODO: implement JdbcResultSet.iterator
-		var next = resultSet.nextRow();
+		var next = resultSet.next();
 
 		while (next.hasValues()) {
 			log.debug(join(next.getValues()));
-			next = resultSet.nextRow();
+			next = resultSet.next();
 		}
 	}
 

@@ -20,6 +20,6 @@ public class EmptyResultSetTest {
 	@Test
 	public void next() throws SQLException {
 		assertThat(emptyResultSet.hasNext()).isFalse();
-		assertThat(emptyResultSet.nextRow().getValues()).isEmpty();
+		assertThat(emptyResultSet.next().getValues()).isEmpty();
 	}
 }

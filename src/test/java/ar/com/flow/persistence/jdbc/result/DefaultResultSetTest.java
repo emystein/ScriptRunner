@@ -27,7 +27,7 @@ public class DefaultResultSetTest {
         var resultSet = wrapResults("SELECT id, title, author_id FROM post WHERE id = 1");
 
         assertThat(resultSet.getMetaData().getColumnLabels()).isEqualTo(list("ID", "TITLE", "AUTHOR_ID"));
-        assertThat(resultSet.nextRow().getValues()).isEqualTo(list("1", "author 1 post 1", "1"));
+        assertThat(resultSet.next().getValues()).isEqualTo(list("1", "author 1 post 1", "1"));
     }
 
     @Test
@@ -35,7 +35,7 @@ public class DefaultResultSetTest {
         var resultSet = wrapResults("SELECT id, title, author_id FROM post WHERE id = -1");
 
         assertThat(resultSet.getMetaData().getColumnLabels()).isEqualTo(list("ID", "TITLE", "AUTHOR_ID"));
-        assertThat(resultSet.nextRow().getValues()).isEqualTo(list());
+        assertThat(resultSet.next().getValues()).isEqualTo(list());
     }
 
     @Test
@@ -43,7 +43,7 @@ public class DefaultResultSetTest {
         var resultSet = new EmptyResultSet();
 
         assertThat(resultSet.getMetaData().getColumnLabels()).isEmpty();
-        assertThat(resultSet.nextRow().getValues()).isEqualTo(list());
+        assertThat(resultSet.next().getValues()).isEqualTo(list());
     }
 
     private DefaultResultSet wrapResults(String aQuery) throws SQLException {

@@ -13,7 +13,7 @@ import java.sql.SQLException;
 public class ScriptRunnerBuilder {
 	private final Connection connection;
 	private boolean autoCommit;
-	private boolean stopOnError;
+	private boolean rollbackOnError;
 
 	public static ScriptRunnerBuilder forConnection(Connection connection) {
 		return new ScriptRunnerBuilder(connection);
@@ -32,18 +32,18 @@ public class ScriptRunnerBuilder {
 		return this;
 	}
 
-	public ScriptRunnerBuilder stopOnError() {
-		return stopOnError(true);
+	public ScriptRunnerBuilder rollbackOnError() {
+		return rollbackOnError(true);
 	}
 
-	public ScriptRunnerBuilder stopOnError(boolean stopOnError) {
-		this.stopOnError = stopOnError;
+	public ScriptRunnerBuilder rollbackOnError(boolean rollbackOnError) {
+		this.rollbackOnError = rollbackOnError;
 		return this;
 	}
 
 	public ScriptRunner build() throws SQLException {
 		var commitStrategy = autoCommit ? new AutoCommitStrategy() : new ManualCommitStrategy();
-		var errorHandler = stopOnError ? new Rollback(connection) : new ContinueExecution();
+		var errorHandler = rollbackOnError ? new Rollback(connection) : new ContinueExecution();
 		var scriptRunner = new ScriptRunner(new DefaultConnection(connection, commitStrategy, errorHandler));
 		scriptRunner.addResultObserver(new PrintResultObserver());
 		return scriptRunner;

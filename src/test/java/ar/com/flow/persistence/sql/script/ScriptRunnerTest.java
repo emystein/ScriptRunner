@@ -39,12 +39,12 @@ public class ScriptRunnerTest {
 
     @ParameterizedTest
     @MethodSource("runScriptDataProvider")
-    public void runScript(boolean connectionAutoCommit, boolean runnerAutoCommit, boolean runnerStopOnError) throws Exception {
+    public void runScript(boolean connectionAutoCommit, boolean autoCommit, boolean rollbackOnError) throws Exception {
         connection.setAutoCommit(connectionAutoCommit);
 
         var scriptRunner = ScriptRunnerBuilder.forConnection(connection)
-                .autoCommit(runnerAutoCommit)
-                .stopOnError(runnerStopOnError)
+                .autoCommit(autoCommit)
+                .rollbackOnError(rollbackOnError)
                 .build();
 
         scriptRunner.runScript("src/test/resources/schema.sql");

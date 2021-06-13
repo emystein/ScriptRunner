@@ -31,8 +31,8 @@ public class ManualCommitScriptRunnerTest extends ScriptRunnerTestCase {
     }
 
     @Test
-    void stopOnError() throws SQLException {
-        var scriptRunner = scriptRunnerBuilder.stopOnError().build();
+    void rollbackOnError() throws SQLException {
+        var scriptRunner = scriptRunnerBuilder.rollbackOnError().build();
 
         assertThrows(SQLException.class, () ->
             scriptRunner.runScript(AUHTOR_1_DUPLICATE_POSTS));
